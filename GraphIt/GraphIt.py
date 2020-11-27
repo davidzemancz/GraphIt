@@ -1,8 +1,9 @@
 from NumericalExpression import NumericalExpression
 from Action import Action, ActionResult
 from Matrix import Matrix
+import traceback
 
-def start():
+def console_start():
     main()
     return True
 
@@ -23,8 +24,8 @@ def main():
         if result.get_stop():
             break
 
-def get_input():
-    return input()
+def get_input(): # Zatim jediny typ vstupu
+    return input("GraphIt.Command>")
 
 def validate_input(input):
     command = ""
@@ -41,6 +42,7 @@ def validate_input(input):
         "m.load",
         "m.tr",
         "m.ref",
+        "m.rref",
         ]
 
     return command in valid_commands
@@ -100,42 +102,54 @@ def evaulate_input(input):
     return Action(command, params, flags)
 
 def perform_action(action):
-    command = action.get_command()
-    command_subs = command.split(".")
-    params = action.get_params()
-    flags = action.get_flags()
+    try:
+        command = action.get_command()
+        command_subs = command.split(".")
+        params = action.get_params()
+        flags = action.get_flags()
 
-    if command == "stop":
-        return ActionResult(stop = True)
-    elif command == "print":
-        for param in params:
-            print(param)
-    elif command_subs[0] == "nexp":
-        if command_subs[1] == "eva":
-            num_expression = NumericalExpression(params[0])
-            result = ""
-            if len(flags) > 0:
-                if flags[0] == "postfix":
-                    result = num_expression.evaulate_postfix()
-                elif flags[0] == "prefix":
-                    raise Exception("Not supported flag")
-                elif flags[0] == "infix":
-                    result = num_expression.evaulate_infix()
-            else:
-               result = num_expression.evaulate_infix()
-            print(params[0], "=", result)
-        elif command_subs[1] == "i2p":
-            num_expression = NumericalExpression(params[0])
-            print(params[0], "->", num_expression.infix_to_postfix())
-    elif command_subs[0] == "m":
-        matrix = Matrix()
-        if command_subs[1] == "load":
-            print(matrix.load(params[0]).get_matrix())
-        elif command_subs[1] == "tr":
-            print(matrix.load(params[0]).transpose().get_matrix())
-        elif command_subs[1] == "ref":
-            print(matrix.load(params[0]).REF().get_matrix())
+        # ====== STOP ======
+        if command == "stop":
+            return ActionResult(stop = True)
+        # ====== TESTOVACI PRINT ======
+        elif command == "print":
+            for param in params:
+                print(param)
+        # ====== NUMERICKE VYRAZY ======
+        elif command_subs[0] == "nexp":
+            if command_subs[1] == "eva":
+                num_expression = NumericalExpression(params[0])
+                result = ""
+                if len(flags) > 0:
+                    if flags[0] == "postfix":
+                        result = num_expression.evaulate_postfix()
+                    elif flags[0] == "prefix":
+                        raise Exception("Not supported flag")
+                    elif flags[0] == "infix":
+                        result = num_expression.evaulate_infix()
+                else:
+                   result = num_expression.evaulate_infix()
+                print(params[0], "=", result)
+            elif command_subs[1] == "i2p":
+                num_expression = NumericalExpression(params[0])
+                print(params[0], "->", num_expression.infix_to_postfix())
+        # ====== MATICE ======
+        elif command_subs[0] == "m":
+            matrix = Matrix()
+            if command_subs[1] == "load":
+                print(matrix.load(params[0]).matrix)
+            elif command_subs[1] == "tr":
+                print(matrix.load(params[0]).transpose().matrix)
+            elif command_subs[1] == "ref":
+                print(matrix.load(params[0]).REF().matrix)
+            elif command_subs[1] == "rref":
+                print(matrix.load(params[0]).RREF().matrix)
+
+        return ActionResult()
+    except Exception as err:
+        tr = traceback.format_exc()
+        return ActionResult(error = ("[ERROR] - " + tr))
             
-    return ActionResult()
+    
 
 
