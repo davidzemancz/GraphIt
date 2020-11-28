@@ -1,6 +1,6 @@
 class Matrix:
     def __init__(self, matrix = []):
-        self.array = matrix
+        self.__array = matrix
 
     @property
     def array(self):
@@ -24,7 +24,8 @@ class Matrix:
                 matrix_row.append(float(value))
             matrix.append(matrix_row)
 
-        self.matrix = matrix
+        self.array.clear()
+        self.array = matrix
 
         return self
 
@@ -40,7 +41,7 @@ class Matrix:
                 matrix[i],matrix[i_next] = matrix[i_next],matrix[i_next]
                 i_next += 1
 
-            for j in range(len(matrix)): # Prochazim radky po aktualnim radkem
+            for j in range(i + 1, len(matrix)): # Prochazim radky po aktualnim radkem
                 ratio = matrix[j][r] / pivot
                 for k in range(len(matrix[i])): # Prochazim sloupce
                     matrix[j][k] = matrix[j][k] - ratio * matrix[i][k] 
