@@ -1,14 +1,14 @@
 class Matrix:
-    def __init__(self, matrix = [[]]):
-        self.matrix = matrix
+    def __init__(self, matrix = []):
+        self.array = matrix
 
     @property
-    def matrix(self):
-       return self.__matrix
+    def array(self):
+       return self.__array
 
-    @matrix.setter
-    def matrix(self, value):
-       self.__matrix = value
+    @array.setter
+    def array(self, value):
+       self.__array = value
         
 
     def load(self, input): # m.load "(1,2,3;4,5,6;7,8,9)"
@@ -29,7 +29,7 @@ class Matrix:
         return self
 
     def REF(self): # m.ref "(1,2,3;4,5,6;7,8,9)"
-        matrix = self.matrix     
+        matrix = self.array     
        
         r = 0
         for i in range(len(matrix)): # Prochazim radky
@@ -49,7 +49,7 @@ class Matrix:
         return self
 
     def RREF(self): # m.rref "(1,2,3;4,5,6;7,8,9)"
-        matrix = self.matrix
+        matrix = self.array
        
         r = 0
         for i in range(len(matrix)): # Prochazim radky
@@ -94,7 +94,7 @@ class Matrix:
         return self
 
     def transpose(self):
-        matrix = self.matrix
+        matrix = self.array
         
         rows_count = len(matrix) # Pocet radku
         if rows_count == 0:

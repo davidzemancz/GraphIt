@@ -1,6 +1,7 @@
 from NumericalExpression import NumericalExpression
 from Action import Action, ActionResult
 from Matrix import Matrix
+from Graph import Graph, Edge, Vertex
 import traceback
 
 def console_start():
@@ -137,13 +138,13 @@ def perform_action(action):
         elif command_subs[0] == "m":
             matrix = Matrix()
             if command_subs[1] == "load":
-                print(matrix.load(params[0]).matrix)
+                print(matrix.load(params[0]).array)
             elif command_subs[1] == "tr":
-                print(matrix.load(params[0]).transpose().matrix)
+                print(matrix.load(params[0]).transpose().array)
             elif command_subs[1] == "ref":
-                print(matrix.load(params[0]).REF().matrix)
+                print(matrix.load(params[0]).REF().array)
             elif command_subs[1] == "rref":
-                print(matrix.load(params[0]).RREF().matrix)
+                print(matrix.load(params[0]).RREF().array)
 
         return ActionResult()
     except Exception as err:
