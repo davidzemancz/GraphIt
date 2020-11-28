@@ -24,10 +24,19 @@
     <Compile Include="Action.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Edge.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphEdgesHandler.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Graph.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GraphIt.py" />
+    <Compile Include="Vertex.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="main.py">
       <SubType>Code</SubType>
     </Compile>

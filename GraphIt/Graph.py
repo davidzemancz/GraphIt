@@ -1,68 +1,13 @@
 from Matrix import Matrix
-
-class Vertex:
-    def __init__(self, id, name = "", index = 0):
-        self.id = id
-        self.name = name
-        self._index = index
-
-    @property
-    def id(self):
-       return self.__id
-
-    @id.setter
-    def id(self, value):
-       self.__id = value
-
-    @property
-    def name(self):
-       return self.__name
-
-    @name.setter
-    def name(self, value):
-       self.__name = value
-
-    @property
-    def _index(self):
-       return self.__index
-
-    @_index.setter
-    def _index(self, value):
-       self.__index = value
-
-class Edge:
-    def __init__(self, vertex_1: Vertex, vertex_2: Vertex, weight = 1):
-        self.vertex_1 = vertex_1
-        self.vertex_2 = vertex_2
-        self.weight = weight
-
-    @property
-    def vertex_1(self):
-       return self.__vertex_1
-
-    @vertex_1.setter
-    def vertex_1(self, value):
-       self.__vertex_1 = value
-
-    @property
-    def vertex_2(self):
-       return self.__vertex_2
-
-    @vertex_2.setter
-    def vertex_2(self, value):
-       self.__vertex_2 = value
-
-    @property
-    def weight(self):
-       return self.__weight
-
-    @weight.setter
-    def weight(self, value):
-       self.__weight = value
+from Vertex import Vertex
+from Edge import Edge
+import GraphEdgesHandler
 
 class Graph:
-    def __init__(self, matrix = []):
-        self.matrix = Matrix(matrix)
+    def __init__(self):
+        self.matrix = Matrix()
+        self.vertices = {}
+        self.edges = []
 
     @property
     def matrix(self):
@@ -80,28 +25,44 @@ class Graph:
     def vertices(self, value):
        self.__vertices = value
 
+    @property
+    def edges(self):
+       return self.__edges
+
+    @edges.setter
+    def edges(self, value):
+       self.__edges = value
+
     def clear(self):
        self.matrix = Matrix()
        self.vertices = {}
+       self.edges = []
        return self
 
-    # Nacte vrcholy do matice
-    # Vstup: vertices = {"vertexId1": "vertexName1", "vertexId2": "vertexName2", ... }
-    # 
-    def init_vertices(self, vertices: {}):
-        self.clear()
-           
-        i = 0
-        for id in vertices:
-            row = [0] * len(vertices)
-            row[i] = float('inf') 
-            self.matrix.array.append(row)
+    # Prida novy vrchol, tj. radek a sloupec do matice
+    def add_vertex(self, vertex: Vertex):
+        # Pridam sloupec do existujicich radku
+        for i in range(len(self.matrix.array)):
+            self.matrix.array[i].append(0)
 
-            vertex = Vertex(id, vertices[id], i)
-            self.vertices[id] = vertex
+        # Pridam novy radek
+        new_size = len(self.matrix.array) + 1
+        new_row = [0] * new_size
+        new_index = new_size - 1
+        new_row[new_index] = float('inf') # Novy vrchol
+        self.matrix.array.append(new_row)
 
-            i += 1
+        vertex._index = new_index
+        self.vertices[vertex.id] = vertex
+
         return self
+
+    # Prida nove vrcholy
+    def add_vertices(self, vertices: []):
+        for vertex in vertices:
+            self.add_vertex(vertex)
+        return self
+
 
     # Vlozi hranu mezi dva vrcholy grafu
     def add_edge(self, edge: Edge):
@@ -113,6 +74,35 @@ class Graph:
         self.matrix.array[v1_index][v2_index] = edge.weight
         self.matrix.array[v2_index][v1_index] = edge.weight
 
+        self.edges.append(edge)
+
         return self
+
+    # Vlozi vice hran
+    def add_edges(self, edges: []):
+        for edge in edges:
+            self.add_edge(edge)
+        return self
+
+
+    # Vrati nejakou kostru grafu
+    def get_spanningTree(self):
+        spanningTree = Graph()
+
+        # Seradim hrany podle ohodnoceni
+        sorted_edges = self.edges.copy()
+        GraphEdgesHandler.sort(sorted_edges)
+
+        for edge in sorted_edges:
+            print(edge.vertex_1.id, "<->", edge.vertex_2.id, "weight - ", edge.weight)
+
+
+
+        return spanningTree
+    
+    
+
+
+
     
 

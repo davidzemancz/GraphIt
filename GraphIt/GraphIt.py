@@ -1,9 +1,10 @@
 from NumericalExpression import NumericalExpression
 from Action import Action, ActionResult
 from Matrix import Matrix
-from Graph import Graph, Edge, Vertex
+from Vertex import Vertex
+from Edge import Edge
+from Graph import Graph
 import traceback
-
 
 class Console:
 
