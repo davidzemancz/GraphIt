@@ -10,7 +10,11 @@ graph.add_edge(Edge(Vertex(3), Vertex(2), 4))
 graph.add_edge(Edge(Vertex(4), Vertex(6), 1))
 graph.add_edge(Edge(Vertex(4), Vertex(5), 9))
 graph.add_edge(Edge(Vertex(1), Vertex(6), 1))
-graph.add_edge(Edge(Vertex(2), Vertex(4), 6))
-graph.get_spanningTree()
+graph.add_edge(Edge(Vertex(2), Vertex(4), 1))
+graph.add_edge(Edge(Vertex(1), Vertex(4), 2))
+print("Is tree? -", graph.is_tree())
+spanning_tree = graph.get_spanningTree()
+for edge in spanning_tree.edges:
+    print(edge.vertex_1.id, "<->", edge.vertex_2.id, "weight - ", edge.weight)
 
 Console.start()
