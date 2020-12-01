@@ -10,6 +10,11 @@ class Matrix:
     def array(self, value):
        self.__array = value
         
+    def get_count_cols(self):
+        return len(self.array[0]) if len(self.array) > 0 else 0
+
+    def get_count_rows(self):
+        return self.array.count()
 
     def load(self, input): # m.load "(1,2,3;4,5,6;7,8,9)"
         matrix = []

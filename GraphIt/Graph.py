@@ -32,14 +32,25 @@ class Graph:
     @edges.setter
     def edges(self, value):
        self.__edges = value
+    
+    # ----------------------------------------------------------------------
+    # Pocet vrcholu grafu
+    # ----------------------------------------------------------------------
+    def vertices_count(self):
+        return self.matrix.get_count_cols()
 
+    # ----------------------------------------------------------------------
+    # Vymazat vsechny hrany a vrcholy grafu
+    # ----------------------------------------------------------------------
     def clear(self):
        self.matrix = Matrix()
        self.vertices = {}
        self.edges = []
        return self
 
-    # Prida novy vrchol, tj. radek a sloupec do matice
+    # ----------------------------------------------------------------------
+    # Pridat vrchol do grafu
+    # ----------------------------------------------------------------------
     def add_vertex(self, vertex: Vertex):
 
         # Pokud vrchol uz existuje, aktualizuji jen jmeno
@@ -62,14 +73,17 @@ class Graph:
 
         return self
 
-    # Prida nove vrcholy
+    # ----------------------------------------------------------------------
+    # Pridat vrcholy do grafu
+    # ----------------------------------------------------------------------
     def add_vertices(self, vertices: []):
         for vertex in vertices:
             self.add_vertex(vertex)
         return self
 
-
-    # Vlozi hranu mezi dva vrcholy grafu
+    # ----------------------------------------------------------------------
+    # Vlozit hranu mezi dva vrcholy grafu
+    # ----------------------------------------------------------------------
     def add_edge(self, edge: Edge):
 
         # Indexy vrcholu v poli
@@ -89,6 +103,9 @@ class Graph:
 
         return self
 
+    # ----------------------------------------------------------------------
+    # Odstranit hranu z grafu
+    # ----------------------------------------------------------------------
     def remove_edge(self, edge: Edge):
 
         # Indexy vrcholu v poli
@@ -104,19 +121,18 @@ class Graph:
 
         return self
 
-    # Vlozi vice hran
+    # ----------------------------------------------------------------------
+    # Vlozit vice hran do grafu
+    # ----------------------------------------------------------------------
     def add_edges(self, edges: []):
         for edge in edges:
             self.add_edge(edge)
         return self
 
-    # Vraci, zda je graf strom
+    # ----------------------------------------------------------------------
+    # Vraci True nebo False, zda je graf strom. Funguje pro souvisle grafy
+    # ----------------------------------------------------------------------
     def is_tree(self): 
-
-        # ==================================
-        # TODO: Treba upravit, funguje jen pro souvisle grafy!
-        # ==================================
-
         vertices = {}
         for edge in self.edges:
             vertices[edge.vertex_1.id] = edge.vertex_1
@@ -124,7 +140,9 @@ class Graph:
 
         return len(self.edges) == len(vertices) - 1 
 
-    # Vrati nejakou kostru grafu
+    # ----------------------------------------------------------------------
+    # Vraci podgraf, ktery je minimalni kostrou grafu
+    # ----------------------------------------------------------------------
     def get_minSpanningTree(self):
         spanningTree = Graph()
 
@@ -141,11 +159,42 @@ class Graph:
             if not spanningTree.is_tree():
                 spanningTree.remove_edge(edge)
         return spanningTree
+     
+    # ----------------------------------------------------------------------
+    # Podpurna fce dijkstrova algoritmu, vraci nejkratsi vzdalenost k nenavstivenym vrcholum
+    # ----------------------------------------------------------------------
+    def min_distance(self, dist_arr, visited_arr): 
+        min = float('inf')
+        for v in range(self.vertices_count()): 
+            if dist_arr[v] < min and visited_arr[v] == False: 
+                min = dist_arr[v] 
+                min_index = v 
+        return min_index 
 
-    # dijkstruv algoritmus
-    def dijkstra(self):
+    # ----------------------------------------------------------------------
+    # Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
+    # ----------------------------------------------------------------------
+    def get_minDistDic(self, vertex: Vertex):
+        
+        count = self.vertices_count()
 
-        return self
+        dist_arr = [float('inf')] * count
+        visited_arr = [False] * count
+        dist_arr[self.vertices[vertex.id]._index] = 0
+   
+        for i in range(count): 
+            v = self.min_distance(dist_arr, visited_arr) 
+            visited_arr[v] = True
+   
+            for u in range(count): 
+                if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
+                    dist_arr[u] = dist_arr[v] + self.matrix.array[v][u] 
+
+        dist_dic = {}
+        for v_id in self.vertices: 
+            dist_dic[v_id] = dist_arr[self.vertices[v_id]._index]
+
+        return dist_dic
     
     
 
