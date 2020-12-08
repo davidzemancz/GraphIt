@@ -10,20 +10,26 @@ class Console:
 
     @staticmethod
     def start(): 
-        console = Console().main()
+        console = Console().run()
         return console
 
-    def main(self):
+    def run(self):
         while True:
+            # Nacteni vstupu
             input = self.get_input()
+
+            # Validace vstupu
             if input == "" or input.isspace():
                 continue
             elif not self.validate_input(input):
                 print("Invalid input")
                 continue
-            action = self.evaulate_input(input)
-            result = self.perform_action(action)
 
+            # Urceni akce
+            action = self.evaulate_input(input)
+
+            # Vyhodnoceni akce
+            result = self.perform_action(action)
             if result.is_error():
                 print(result.get_error())
             elif result.get_stop():
@@ -151,6 +157,7 @@ class Console:
                     print(matrix.load(params[0]).REF().array)
                 elif command_subs[1] == "rref":
                     print(matrix.load(params[0]).RREF().array)
+            # ====== GRAFIKY ======
 
             return ActionResult()
         except Exception as err:
