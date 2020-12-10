@@ -3,13 +3,13 @@ from Vertex import Vertex
 from Edge import Edge
 import GraphEdgesHandler
 import json
+import copy
 
 class Graph:
     def __init__(self):
-        self.matrix = Matrix()
+        self.matrix = Matrix([])
         self.vertices = {}
         self.edges = []
-        self.set_error("")
 
     @property
     def matrix(self):
@@ -35,16 +35,6 @@ class Graph:
     def edges(self, value):
        self.__edges = value
 
-
-   
-    def vertices_count(self):
-        """
-# =========================================================
-# Pocet vrcholu grafu
-# =========================================================
-        """
-        return self.matrix.get_count_cols()
-
     
     def clear(self):
         """
@@ -58,7 +48,7 @@ class Graph:
         return self
 
 
-    def load_file(self, r_path):
+    def load_fromFile(self, r_path):
         """
 # =========================================================
 # Nacte graf ze souboru
@@ -78,7 +68,7 @@ class Graph:
 #   edges:
 #   [
 #       {
-#           weight: 16
+#           weight: 4
 #           vertex_1:{
 #               id: 1
 #           }
@@ -90,7 +80,8 @@ class Graph:
 # }
 # =========================================================
         """
-        graph = Graph()
+
+        self.clear()
 
         file = open(r_path)
         data = json.load(file)
@@ -98,12 +89,11 @@ class Graph:
 
         for j_vertex in j_graph["vertices"]:
             vertex = Vertex(j_vertex["id"], j_vertex["name"])
-            graph.add_vertex(vertex)
+            self.add_vertex(vertex)
 
         for j_edge in j_graph["edges"]:
             edge = Edge(Vertex(j_edge["vertex_1"]["id"]), Vertex(j_edge["vertex_2"]["id"]), j_edge["weight"])
-            graph.add_edge(edge, "a")
-
+            self.add_edge(edge, "a")
 
         return self
 
@@ -156,43 +146,41 @@ class Graph:
 # > mode = "a" ... pokud nejsou vrcholy hrany v grafu, pridam je
 # =========================================================
         """
-        self.clear_error()
-        try:
 
-            if mode == "n":
-                if not edge.vertex_1.id in self.vertices or not edge.vertex_2.id in self.vertices:
-                    raise Exception("No such a vertex in graph")
-            elif mode == "a":
-                if not edge.vertex_1.id in self.vertices:
-                    self.add_vertex(self, edge.vertex_1)
-                if not edge.vertex_2.id in self.vertices:
-                    self.add_vertex(self, edge.vertex_2)
+        if mode == "n":
+            if not edge.vertex_1.id in self.vertices or not edge.vertex_2.id in self.vertices:
+                raise Exception("No such a vertex in graph")
+        elif mode == "a":
+            if not edge.vertex_1.id in self.vertices:
+                self.add_vertex(self, edge.vertex_1)
+            if not edge.vertex_2.id in self.vertices:
+                self.add_vertex(self, edge.vertex_2)
 
-            # Indexy vrcholu v poli
-            v1_index = self.vertices[edge.vertex_1.id]._index
-            v2_index = self.vertices[edge.vertex_2.id]._index
+        # Indexy vrcholu v poli
+        v1_index = self.vertices[edge.vertex_1.id]._index
+        v2_index = self.vertices[edge.vertex_2.id]._index
 
-            # Neorientovany graf -> symetricka matice
-            self.matrix.array[v1_index][v2_index] = edge.weight
-            self.matrix.array[v2_index][v1_index] = edge.weight
+        # Neorientovany graf -> symetricka matice
+        self.matrix.array[v1_index][v2_index] = edge.weight
+        self.matrix.array[v2_index][v1_index] = edge.weight
 
-            # Nastavim vrcholy hrany
-            edge.vertex_1 = self.vertices[edge.vertex_1.id]
-            edge.vertex_2 = self.vertices[edge.vertex_2.id]
+        # Nastavim vrcholy hrany
+        edge.vertex_1 = self.vertices[edge.vertex_1.id]
+        edge.vertex_2 = self.vertices[edge.vertex_2.id]
 
-            # Pridam hranu
-            self.edges.append(edge)
+        # Pridam hranu
+        self.edges.append(edge)
 
-        except Exception as err:
-            self.set_error(err)
             
         return self
 
-    # =========================================================
-    # Odstranit hranu z grafu
-    # =========================================================
-    def remove_edge(self, edge: Edge):
 
+    def remove_edge(self, edge: Edge):
+        """
+# =========================================================
+# Odstranit hranu z grafu
+# =========================================================
+        """
         # Indexy vrcholu v poli
         v1_index = self.vertices[edge.vertex_1.id]._index
         v2_index = self.vertices[edge.vertex_2.id]._index
@@ -206,55 +194,77 @@ class Graph:
 
         return self
 
-    # =========================================================
-    # Vlozit vice hran do grafu
-    # =========================================================
+
     def add_edges(self, edges: []):
+        """
+# =========================================================
+# Vlozit vice hran do grafu
+# =========================================================
+        """
         for edge in edges:
             self.add_edge(edge)
         return self
 
-    # =========================================================
-    # Vraci True nebo False, zda je graf souvisly
-    # =========================================================
+   
     def is_connected(self): 
-        
-        visited = {}
-               
-        for edge in self.edges:
-            if not visited[edge.vertex_1.id]:
-                visited[edge.vertex_1.id] = True
-            if not visited[edge.vertex_2.id]:
-                visited[edge.vertex_2.id] = True
-        
-        return len(visited) == len(self.vertices)
-
-    # =========================================================
-    # Vraci True nebo False, zda je graf strom.
-    # =========================================================
-    def is_tree(self):
-        
-        if not self.is_connected():
+        """
+# =========================================================
+# Vraci True nebo False, zda je graf souvisly
+# =========================================================
+        """
+        if len(self.vertices) < 1:
             return False
 
-        vertices = {}
-        for edge in self.edges:
-            vertices[edge.vertex_1.id] = edge.vertex_1
-            vertices[edge.vertex_2.id] = edge.vertex_2
+        count = 1
+        visited = {}
+        for key in self.vertices:
+            visited[key] = False
 
-        return len(self.edges) == len(vertices) - 1 
+        key = list(self.vertices.keys())[0]
+        visited[key] = True
 
-    # =========================================================
-    # Vraci podgraf, ktery je minimalni kostrou grafu
-    # =========================================================
+        queue = []
+        while True:
+            for edge in self.edges:
+                if edge.vertex_1.id == key and not visited[edge.vertex_2.id]:
+                    queue.append(edge.vertex_2.id)
+                    visited[edge.vertex_2.id] = True
+                    count += 1
+                if edge.vertex_2.id == key and not visited[edge.vertex_1.id]:
+                    queue.append(edge.vertex_1.id)
+                    visited[edge.vertex_1.id] = True
+                    count += 1
+
+            if len(queue) < 1:
+                break
+            key = queue.pop(0)
+                    
+        
+        return count == len(self.vertices)
+
+  
+    def is_tree(self):
+        """
+# =========================================================
+# Vraci True nebo False, zda je graf strom.
+# =========================================================
+        """
+        return len(self.edges) == len(self.vertices) - 1 
+
+   
     def get_minSpanningTree(self):
+        """
+# =========================================================
+# Vraci podgraf, ktery je minimalni kostrou grafu
+# =========================================================
+        """
         spanningTree = Graph()
 
         # Seradim hrany podle ohodnoceni
-        sorted_edges = self.edges.copy()
+        sorted_edges = copy.deepcopy(self.edges)
         GraphEdgesHandler.sort(sorted_edges)
 
-        while len(spanningTree.edges) < len(self.vertices) - 1: # Dokud nejsou hrany mezi vsemi vrcholy
+        while len(spanningTree.edges) < len(self.vertices) - 1 and len(sorted_edges) > 0: # Dokud nejsou hrany mezi vsemi vrcholy
             edge = sorted_edges.pop(0) # Hrana s nejnizsim ohodnocennim
             spanningTree.add_vertex(edge.vertex_1)
             spanningTree.add_vertex(edge.vertex_2)
@@ -264,22 +274,30 @@ class Graph:
                 spanningTree.remove_edge(edge)
         return spanningTree
      
-    # =========================================================
-    # Podpurna fce dijkstrova algoritmu, vraci nejkratsi vzdalenost k nenavstivenym vrcholum
-    # =========================================================
+    
     def min_distance(self, dist_arr, visited_arr): 
+        """
+# =========================================================
+# Podpurna fce dijkstrova algoritmu, vraci nejkratsi vzdalenost k nenavstivenym vrcholum
+# =========================================================
+        """
+        min_index = -1
         min = float('inf')
-        for v in range(self.vertices_count()): 
+        #min_index = 0
+        for v in range(len(self.vertices)): 
             if dist_arr[v] < min and visited_arr[v] == False: 
                 min = dist_arr[v] 
                 min_index = v 
         return min_index 
 
-    # =========================================================
-    # Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
-    # =========================================================
+    
     def get_minDistDic(self, source: Vertex):
-        count = self.vertices_count()
+        """
+# =========================================================
+# Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
+# =========================================================
+        """
+        count = len(self.vertices)
 
         dist_arr = [float('inf')] * count
         visited_arr = [False] * count
@@ -287,11 +305,13 @@ class Graph:
    
         for i in range(count): 
             v = self.min_distance(dist_arr, visited_arr) 
+            if v == -1:
+                continue
             visited_arr[v] = True
    
             for u in range(count): 
                 if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
-                    dist_arr[u] = dist_arr[v] + self.matrix.array[v][u] 
+                    dist_arr[u] = dist_arr[v] + self.matrix.array[v][u]
 
         dist_dic = {}
         for v_id in self.vertices: 
@@ -301,7 +321,24 @@ class Graph:
 
 
        
+    def print(self):
+        """
+# =========================================================
+# Vyprinti graf to konzole
+# =========================================================
+        """
+        for edge in self.edges:
+            print("Edge from [" + str(edge.vertex_1.id) + "] to [" + str(edge.vertex_2.id) + "] of weight " + str(edge.weight))
 
+        return self
+
+    def clone(self):
+        """
+# =========================================================
+# Deep copy instance
+# =========================================================
+        """
+        return copy.deepcopy(self)
 
 
     

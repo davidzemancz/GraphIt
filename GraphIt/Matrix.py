@@ -1,3 +1,5 @@
+import copy
+
 class Matrix:
     def __init__(self, matrix = []):
         self.__array = matrix
@@ -87,31 +89,36 @@ class Matrix:
 
         return self
 
-    def multiply_left(self):
+    def can_multiply(self, matrix: Matrix, dir = "l"):
+        if dir == "l":
+            return self.get_count_cols() == matrix.get_count_rows()
+        if dir == "r":
+            return matrix.get_count_cols() == self.get_count_rows()
+
+    def multiply_left(self, matrix: Matrix):
         return self
 
-    def multiply_right(self):
+    def multiply_right(self, matrix: Matrix):
         return self
 
-    def add(self):
+    def add(self, matrix: Matrix):
+        for i in range(self.array):
+            for j in range(self.array[i]):
+                self.array[i, j] += matrix.get_value(i, j)
         return self
 
-    def subtract(self):
-        return self
+    def get_value(self, row, column):
+        if len(self.array) >= row:
+            if len(self.array[row]) >= column:
+                return self.array[row][column]
+        return 0
 
     def transpose(self):
         matrix = self.array
         
-        rows_count = len(matrix) # Pocet radku
-        if rows_count == 0:
-           return self
-
-        columns_count = len(matrix[0]) # Delka radku = pocet sloupcu
-        new_matrix = []
-
-        for i in range(columns_count):
+        for i in range(self.get_count_cols()):
             new_row = []
-            for j in range(rows_count):
+            for j in range(self.get_count_rows()):
                 new_row.append(matrix[j][i])
             new_matrix.append(new_row)
            
@@ -125,6 +132,6 @@ class Matrix:
         return 0
 
     def clone(self):
-        return Matrix(get_arr())
+        return copy.deepcopy(self)
     
 

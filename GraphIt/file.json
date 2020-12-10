@@ -1,0 +1,73 @@
+{
+  "graph": {
+    "vertices": [
+      {
+        "id": 1,
+        "name": "Vrchol 1"
+      },
+      {
+        "id": 2,
+        "name": "Vrchol 2"
+      },
+      {
+        "id": 3,
+        "name": "Vrchol 3"
+      },
+      {
+        "id": 4,
+        "name": "Vrchol 4"
+      },
+      {
+        "id": 5,
+        "name": "Vrchol 5"
+      }
+    ],
+    "edges": [
+      {
+        "weight": 4,
+        "vertex_1": {
+          "id": 1
+        },
+        "vertex_2": {
+          "id": 2
+        }
+      },
+      {
+        "weight": 3,
+        "vertex_1": {
+          "id": 2
+        },
+        "vertex_2": {
+          "id": 3
+        }
+      },
+      {
+        "weight": 2,
+        "vertex_1": {
+          "id": 3
+        },
+        "vertex_2": {
+          "id": 4
+        }
+      },
+      {
+        "weight": 6,
+        "vertex_1": {
+          "id": 4
+        },
+        "vertex_2": {
+          "id": 2
+        }
+      },
+      {
+        "weight": 7,
+        "vertex_1": {
+          "id": 5
+        },
+        "vertex_2": {
+          "id": 1
+        }
+      }
+    ]
+  }
+}
