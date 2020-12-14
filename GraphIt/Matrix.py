@@ -1,8 +1,15 @@
 import copy
 
 class Matrix:
-    def __init__(self, matrix = []):
-        self.__array = matrix
+    def __init__(self, matrix = [], columns = 0, rows = 0):
+        self.array = matrix
+
+        if columns > 0 and rows > 0:
+            for i in range(rows):
+                row = []
+                for j in range(columns):
+                    row.append(0)
+                self.array.append(row)
 
     @property
     def array(self):
@@ -16,9 +23,12 @@ class Matrix:
         return len(self.array[0]) if len(self.array) > 0 else 0
 
     def get_count_rows(self):
-        return self.array.count()
+        return len(self.array)
 
     def load(self, input): # m.load "(1,2,3;4,5,6;7,8,9)"
+        """
+        Nacteni matice ze vstupu
+        """
         matrix = []
 
         input = input[1:-1]
@@ -37,6 +47,9 @@ class Matrix:
         return self
 
     def REF(self): # m.ref "(1,2,3;4,5,6;7,8,9)"
+        """
+        Uprava matice do REF
+        """
         matrix = self.array     
        
         r = 0
@@ -57,6 +70,9 @@ class Matrix:
         return self
 
     def RREF(self): # m.rref "(1,2,3;4,5,6;7,8,9)"
+        """
+        Uprava matice do RREF
+        """
         matrix = self.array
        
         r = 0
@@ -90,48 +106,94 @@ class Matrix:
         return self
 
     def can_multiply(self, matrix: Matrix, dir = "l"):
+        """
+        Lze matice nasobit
+        ---------------------------------------------------------
+        Dir(ection)
+        > dir = "l" ... nasobit zleva
+        > dir = "r" ... nasobit zprava
+        """
         if dir == "l":
             return self.get_count_cols() == matrix.get_count_rows()
         if dir == "r":
             return matrix.get_count_cols() == self.get_count_rows()
 
-    def multiply_left(self, matrix: Matrix):
-        return self
+    def multiply_left(self, matrix: Matrix): # m.ml "(1,3;5,2;2,4)";"(1,1,3;3,2,4)"  , m.ml "(1,1,3;3,2,4)";"(1,3;5,2;2,4)"
+        """
+        Nasobeni matici zleva
+        """
 
-    def multiply_right(self, matrix: Matrix):
-        return self
+        if not self.can_multiply(matrix, "l"):
+            raise Exception("Invalid matrix size")
+
+        self.transpose()
+        result = Matrix([], matrix.get_count_rows(), self.get_count_rows())
+
+        for i in range(len(matrix.array)): # Radky leve matice
+           for j in range(len(self.array)): # Sloupce prave matice
+               val = 0
+               for k in range(len(matrix.array[i])): # Sloupce leve matice
+                   val += matrix.array[i][k] * self.array[j][k]
+               result.array[i][j] = val
+
+        self.transpose()
+
+        return result
+
+    def multiply_right(self, matrix: Matrix): # m.mr "(1,3;5,2;2,4)";"(1,1,3;3,2,4)"  , m.mr "(1,1,3;3,2,4)";"(1,3;5,2;2,4)"
+        """
+        Nasobeni matici zprava
+        """
+
+        return matrix.multiply_left(self)
 
     def add(self, matrix: Matrix):
+        """
+        Secteni dvou matic
+        """
         for i in range(self.array):
             for j in range(self.array[i]):
                 self.array[i, j] += matrix.get_value(i, j)
         return self
 
     def get_value(self, row, column):
+        """
+        Hodnota konretniho prvku
+        """
         if len(self.array) >= row:
             if len(self.array[row]) >= column:
                 return self.array[row][column]
         return 0
 
+    def multipy_const(self, const):
+        """
+        Vynasobeni matice konstantou
+        """
+        for i in range(self.array):
+            for j in range(self.array[i]):
+                self.array[i, j] *= const
+        return self
+
     def transpose(self):
-        matrix = self.array
-        
+        """
+        Transpozice
+        """
+        new_matrix = []
+
         for i in range(self.get_count_cols()):
             new_row = []
             for j in range(self.get_count_rows()):
-                new_row.append(matrix[j][i])
+                new_row.append(self.array[j][i])
             new_matrix.append(new_row)
            
-        self.matrix = new_matrix
+        self.array = new_matrix
         return self
 
-    def inverse(self):
-        return self
-
-    def rank(self):
-        return 0
 
     def clone(self):
+        """
+        Deepclone
+        """
         return copy.deepcopy(self)
     
 

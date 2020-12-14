@@ -2,72 +2,231 @@
   "graph": {
     "vertices": [
       {
-        "id": 1,
-        "name": "Vrchol 1"
+        "id": "A",
+        "name": "Praha"
       },
       {
-        "id": 2,
-        "name": "Vrchol 2"
+        "id": "K",
+        "name": "Karlovy Vary"
       },
       {
-        "id": 3,
-        "name": "Vrchol 3"
+        "id": "U",
+        "name": "Ústí nad Labem"
       },
       {
-        "id": 4,
-        "name": "Vrchol 4"
+        "id": "L",
+        "name": "Liberec"
       },
       {
-        "id": 5,
-        "name": "Vrchol 5"
+        "id": "H",
+        "name": "Hradec Králové"
+      },
+      {
+        "id": "E",
+        "name": "Pardubice"
+      },
+      {
+        "id": "M",
+        "name": "Olomouc"
+      },
+      {
+        "id": "T",
+        "name": "Ostrava"
+      },
+      {
+        "id": "Z",
+        "name": "Zlín"
+      },
+      {
+        "id": "B",
+        "name": "Brno"
+      },
+      {
+        "id": "J",
+        "name": "Jihlava"
+      },
+      {
+        "id": "C",
+        "name": "Èeské Budìjovice"
+      },
+      {
+        "id": "P",
+        "name": "Plzeò"
       }
     ],
     "edges": [
       {
-        "weight": 4,
         "vertex_1": {
-          "id": 1
+          "id": "C"
         },
         "vertex_2": {
-          "id": 2
-        }
+          "id": "P"
+        },
+        "weight": 120
       },
       {
-        "weight": 3,
         "vertex_1": {
-          "id": 2
+          "id": "C"
         },
         "vertex_2": {
-          "id": 3
-        }
+          "id": "A"
+        },
+        "weight": 140
       },
       {
-        "weight": 2,
         "vertex_1": {
-          "id": 3
+          "id": "P"
         },
         "vertex_2": {
-          "id": 4
-        }
+          "id": "K"
+        },
+        "weight": 80
       },
       {
-        "weight": 6,
         "vertex_1": {
-          "id": 4
+          "id": "K"
         },
         "vertex_2": {
-          "id": 2
-        }
+          "id": "U"
+        },
+        "weight": 110
       },
       {
-        "weight": 7,
         "vertex_1": {
-          "id": 5
+          "id": "U"
         },
         "vertex_2": {
-          "id": 1
-        }
+          "id": "A"
+        },
+        "weight": 140
+      },
+      {
+        "vertex_1": {
+          "id": "L"
+        },
+        "vertex_2": {
+          "id": "U"
+        },
+        "weight": 50
+      },
+      {
+        "vertex_1": {
+          "id": "L"
+        },
+        "vertex_2": {
+          "id": "A"
+        },
+        "weight": 150
+      },
+      {
+        "vertex_1": {
+          "id": "L"
+        },
+        "vertex_2": {
+          "id": "H"
+        },
+        "weight": 100
+      },
+      {
+        "vertex_1": {
+          "id": "H"
+        },
+        "vertex_2": {
+          "id": "A"
+        },
+        "weight": 120
+      },
+      {
+        "vertex_1": {
+          "id": "H"
+        },
+        "vertex_2": {
+          "id": "E"
+        },
+        "weight": 80
+      },
+      {
+        "vertex_1": {
+          "id": "E"
+        },
+        "vertex_2": {
+          "id": "A"
+        },
+        "weight": 120
+      },
+      {
+        "vertex_1": {
+          "id": "E"
+        },
+        "vertex_2": {
+          "id": "J"
+        },
+        "weight": 90
+      },
+      {
+        "vertex_1": {
+          "id": "C"
+        },
+        "vertex_2": {
+          "id": "J"
+        },
+        "weight": 120
+      },
+      {
+        "vertex_1": {
+          "id": "J"
+        },
+        "vertex_2": {
+          "id": "B"
+        },
+        "weight": 100
+      },
+      {
+        "vertex_1": {
+          "id": "A"
+        },
+        "vertex_2": {
+          "id": "B"
+        },
+        "weight": 200
+      },
+      {
+        "vertex_1": {
+          "id": "B"
+        },
+        "vertex_2": {
+          "id": "M"
+        },
+        "weight": 80
+      },
+      {
+        "vertex_1": {
+          "id": "M"
+        },
+        "vertex_2": {
+          "id": "T"
+        },
+        "weight": 100
+      },
+      {
+        "vertex_1": {
+          "id": "B"
+        },
+        "vertex_2": {
+          "id": "Z"
+        },
+        "weight": 100
+      },
+      {
+        "vertex_1": {
+          "id": "T"
+        },
+        "vertex_2": {
+          "id": "Z"
+        },
+        "weight": 120
       }
+
     ]
   }
 }

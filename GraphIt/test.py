@@ -21,7 +21,7 @@ print("========== Min spanning tree ==========")
 spanning_tree = graph.get_minSpanningTree()
 spanning_tree.print()
 print("========== Min distances ==========")
-dic = graph.get_minDistDic(Vertex(1))
+dic = graph.dijkstra(Vertex(1))
 for v_id in dic:
     print(v_id, "-", dic[v_id])
 print("========== Json graph ==========")

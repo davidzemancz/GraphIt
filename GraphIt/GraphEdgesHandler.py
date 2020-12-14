@@ -9,6 +9,9 @@ def insertSort(arr):
                break
 
 def sort(arr): # Mergesort, co pri poli kratsim 11 vola insertsort
+    """
+    Tridim hrany podle velikosti
+    """
     if len(arr) <= 1:
         return arr
     elif len(arr) <= 10: # Pokud je pole kratsi 11, insertsortim

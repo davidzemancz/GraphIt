@@ -38,9 +38,9 @@ class Graph:
     
     def clear(self):
         """
-# =========================================================
+
 # Vymazat vsechny hrany a vrcholy grafu
-# =========================================================
+
         """
         self.matrix = Matrix()
         self.vertices = {}
@@ -50,37 +50,34 @@ class Graph:
 
     def load_fromFile(self, r_path):
         """
-# =========================================================
-# Nacte graf ze souboru
-# ---------------------------------------------------------
-# Struktura (JSON)
-# graph:{
-#   vertices:[
-#       {
-#           id: 1
-#           name: "Vrchol 1"
-#       },
-#       {
-#           id: 2
-#           name: "Vrchol 1"
-#       }
-#   ]
-#   edges:
-#   [
-#       {
-#           weight: 4
-#           vertex_1:{
-#               id: 1
-#           }
-#           vertex_2:{
-#               id: 2
-#           }
-#       },
-#   ]
-# }
-# =========================================================
+        Nacte graf ze souboru
+        ---------------------------------------------------------
+        Struktura (JSON)
+        graph:{
+          vertices:[
+              {
+                  id: 1
+                  name: "Vrchol 1"
+              },
+              {
+                  id: 2
+                  name: "Vrchol 1"
+              }
+          ]
+          edges:
+          [
+              {
+                  weight: 4
+                  vertex_1:{
+                      id: 1
+                  }
+                  vertex_2:{
+                      id: 2
+                  }
+              },
+          ]
+        }
         """
-
         self.clear()
 
         file = open(r_path)
@@ -100,9 +97,8 @@ class Graph:
    
     def add_vertex(self, vertex: Vertex):
         """
-# =========================================================
-# Pridat vrchol do grafu
-# =========================================================
+        Pridat vrchol do grafu
+
         """
         # Pokud vrchol uz existuje, aktualizuji jen jmeno
         if vertex.id in self.vertices:
@@ -127,9 +123,7 @@ class Graph:
 
     def add_vertices(self, vertices: []):
         """
-# =========================================================
-# Pridat vrcholy do grafu
-# =========================================================
+        Pridat vrcholy do grafu
         """
         for vertex in vertices:
             self.add_vertex(vertex)
@@ -138,13 +132,11 @@ class Graph:
    
     def add_edge(self, edge: Edge, mode = "n"):
         """
-# =========================================================
-# Vlozit hranu mezi dva vrcholy grafu
-# ---------------------------------------------------------
-# Mode
-# > mode = "n" ... vychozi hodnota, pokud nejsou vrcholy hrany v grafu, vyhodi vyjimku
-# > mode = "a" ... pokud nejsou vrcholy hrany v grafu, pridam je
-# =========================================================
+        Vlozit hranu mezi dva vrcholy grafu
+        ---------------------------------------------------------
+        Mode
+        > mode = "n" ... vychozi hodnota, pokud nejsou vrcholy hrany v grafu, vyhodi vyjimku
+        > mode = "a" ... pokud nejsou vrcholy hrany v grafu, pridam je
         """
 
         if mode == "n":
@@ -177,9 +169,7 @@ class Graph:
 
     def remove_edge(self, edge: Edge):
         """
-# =========================================================
-# Odstranit hranu z grafu
-# =========================================================
+        Odstranit hranu z grafu
         """
         # Indexy vrcholu v poli
         v1_index = self.vertices[edge.vertex_1.id]._index
@@ -197,9 +187,7 @@ class Graph:
 
     def add_edges(self, edges: []):
         """
-# =========================================================
-# Vlozit vice hran do grafu
-# =========================================================
+        Vlozit vice hran do grafu
         """
         for edge in edges:
             self.add_edge(edge)
@@ -208,9 +196,7 @@ class Graph:
    
     def is_connected(self): 
         """
-# =========================================================
-# Vraci True nebo False, zda je graf souvisly
-# =========================================================
+        Vraci True nebo False, zda je graf souvisly
         """
         if len(self.vertices) < 1:
             return False
@@ -245,18 +231,14 @@ class Graph:
   
     def is_tree(self):
         """
-# =========================================================
-# Vraci True nebo False, zda je graf strom.
-# =========================================================
+        Vraci True nebo False, zda je graf strom.
         """
         return len(self.edges) == len(self.vertices) - 1 
 
    
     def get_minSpanningTree(self):
         """
-# =========================================================
-# Vraci podgraf, ktery je minimalni kostrou grafu
-# =========================================================
+        Vraci podgraf, ktery je minimalni kostrou grafu
         """
         spanningTree = Graph()
 
@@ -275,11 +257,9 @@ class Graph:
         return spanningTree
      
     
-    def min_distance(self, dist_arr, visited_arr): 
+    def dijkstra_md(self, dist_arr, visited_arr): 
         """
-# =========================================================
-# Podpurna fce dijkstrova algoritmu, vraci nejkratsi vzdalenost k nenavstivenym vrcholum
-# =========================================================
+        Podpurna fce dijkstrova algoritmu, vraci nejkratsi vzdalenost k nenavstivenym vrcholum
         """
         min_index = -1
         min = float('inf')
@@ -291,11 +271,9 @@ class Graph:
         return min_index 
 
     
-    def get_minDistDic(self, source: Vertex):
+    def dijkstra(self, source: Vertex, target: Vertex):
         """
-# =========================================================
-# Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
-# =========================================================
+        Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
         """
         count = len(self.vertices)
 
@@ -304,14 +282,17 @@ class Graph:
         dist_arr[self.vertices[source.id]._index] = 0
    
         for i in range(count): 
-            v = self.min_distance(dist_arr, visited_arr) 
+            v = self.dijkstra_md(dist_arr, visited_arr) 
             if v == -1:
                 continue
             visited_arr[v] = True
-   
-            for u in range(count): 
-                if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
-                    dist_arr[u] = dist_arr[v] + self.matrix.array[v][u]
+            
+            #
+            #for u in range(count): 
+            #   if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
+            #        dist_arr[u] = dist_arr[v] + self.matrix.array[v][u]
+
+
 
         dist_dic = {}
         for v_id in self.vertices: 
@@ -323,20 +304,16 @@ class Graph:
        
     def print(self):
         """
-# =========================================================
-# Vyprinti graf to konzole
-# =========================================================
+        Vyprinti graf to konzole
         """
         for edge in self.edges:
-            print("Edge from [" + str(edge.vertex_1.id) + "] to [" + str(edge.vertex_2.id) + "] of weight " + str(edge.weight))
+            print("Edge from [" + str(edge.vertex_1.id) + ", (" + self.vertices[edge.vertex_1.id].name + ")] to [" + str(edge.vertex_2.id) + ", (" + self.vertices[edge.vertex_2.id].name + ")] of weight " + str(edge.weight))
 
         return self
 
     def clone(self):
         """
-# =========================================================
-# Deep copy instance
-# =========================================================
+        Deepclone
         """
         return copy.deepcopy(self)
 

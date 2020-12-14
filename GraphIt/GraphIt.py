@@ -56,6 +56,8 @@ class Console:
             "m.tr",
             "m.ref",
             "m.rref",
+            "m.ml",
+            "m.mr",
             ]
 
         return command in valid_commands
@@ -157,6 +159,14 @@ class Console:
                     print(matrix.load(params[0]).REF().array)
                 elif command_subs[1] == "rref":
                     print(matrix.load(params[0]).RREF().array)
+                elif command_subs[1] == "ml":
+                    matrix.load(params[0])
+                    matrix_2 = Matrix().load(params[1])
+                    print(matrix.multiply_left(matrix_2).array)
+                elif command_subs[1] == "mr":
+                    matrix.load(params[0])
+                    matrix_2 = Matrix().load(params[1])
+                    print(matrix.multiply_right(matrix_2).array)
             # ====== GRAFIKY ======
 
             return ActionResult()

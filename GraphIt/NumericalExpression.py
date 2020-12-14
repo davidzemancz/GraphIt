@@ -11,6 +11,9 @@ class NumericalExpression:
         self.__data = data
 
     def evaulate_postfix(self):
+        """
+        Vyhodnoceni postfix vyrazu
+        """
         data = self.get_data() + " "
         
         stack = Stack()
@@ -21,7 +24,7 @@ class NumericalExpression:
                     num1 = stack.pop()
                     num2 = stack.pop()
                     assert num1 is not None and num2 is not None
-                    result = self.operation(num2, num1, val)
+                    result = self.perform_operation(num2, num1, val)
                     stack.push(result)
                 else:
                     stack.push(float(val))
@@ -33,10 +36,16 @@ class NumericalExpression:
         return result
 
     def evaulate_infix(self):
+        """
+        Vyhodnoceni infixniho vyrazu
+        """
         self.set_data(self.infix_to_postfix())
         return self.evaulate_postfix()
 
     def infix_to_postfix(self):
+        """
+        Prevod infixniho vyrazu na postfixni
+        """
         data = self.get_data()
         infix_arr = []
         postfix_arr = []
@@ -86,7 +95,10 @@ class NumericalExpression:
 
         return " ".join(map(str, postfix_arr)) 
 
-    def operation(self, num1, num2, operation):
+    def perform_operation(self, num1, num2, operation):
+        """
+        Provedeni aritmeticke operace
+        """
         if operation == "+":
             return num1 + num2
         elif operation == "-":
@@ -100,9 +112,15 @@ class NumericalExpression:
             return num1 / num2
 
     def is_operation(self, val):
+        """
+        Je znak operace?
+        """
         return val == "+" or val == "*" or val == "-" or val == "/" or val == "^"
 
     def get_operation_pritorty(self, operation):
+        """
+        Priorita operace
+        """
         if operation == "+" or operation == "-":
             return 1
         elif operation == "*" or operation == "/":
