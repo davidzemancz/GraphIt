@@ -1,4 +1,5 @@
-from GraphIt import Console, Graph, Edge, Vertex
+from GraphIt import  Console, Graph, Edge, Vertex
+
 
 graph = Graph()
 graph.add_vertex(Vertex(1, "Jedna"))
@@ -25,7 +26,7 @@ dic = graph.dijkstra(Vertex(1))
 for v_id in dic:
     print(v_id, "-", dic[v_id])
 print("========== Json graph ==========")
-graph.load_fromFile("file.json")
+graph.load_fromFile("file")
 graph.print()
 
 Console.start()

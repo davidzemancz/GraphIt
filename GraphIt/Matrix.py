@@ -1,4 +1,5 @@
 import copy
+import Matrix
 
 class Matrix:
     def __init__(self, matrix = [], columns = 0, rows = 0):

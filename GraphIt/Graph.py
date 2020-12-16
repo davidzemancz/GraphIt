@@ -38,9 +38,7 @@ class Graph:
     
     def clear(self):
         """
-
-# Vymazat vsechny hrany a vrcholy grafu
-
+ Vymazat vsechny hrany a vrcholy grafu
         """
         self.matrix = Matrix()
         self.vertices = {}
@@ -50,37 +48,11 @@ class Graph:
 
     def load_fromFile(self, r_path):
         """
-        Nacte graf ze souboru
-        ---------------------------------------------------------
-        Struktura (JSON)
-        graph:{
-          vertices:[
-              {
-                  id: 1
-                  name: "Vrchol 1"
-              },
-              {
-                  id: 2
-                  name: "Vrchol 1"
-              }
-          ]
-          edges:
-          [
-              {
-                  weight: 4
-                  vertex_1:{
-                      id: 1
-                  }
-                  vertex_2:{
-                      id: 2
-                  }
-              },
-          ]
-        }
+Nacte graf ze souboru
         """
         self.clear()
 
-        file = open(r_path)
+        file = open(r_path + ".json")
         data = json.load(file)
         j_graph = data["graph"]
 
@@ -94,7 +66,6 @@ class Graph:
 
         return self
 
-   
     def add_vertex(self, vertex: Vertex):
         """
         Pridat vrchol do grafu
@@ -271,7 +242,7 @@ class Graph:
         return min_index 
 
     
-    def dijkstra(self, source: Vertex, target: Vertex):
+    def dijkstra(self, source: Vertex):
         """
         Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
         """
@@ -305,7 +276,15 @@ class Graph:
     def print(self):
         """
         Vyprinti graf to konzole
+        
         """
+        lc = 12
+
+        print("=" * lc, "VERTICES", "=" * lc)
+        for vertex_id in self.vertices:
+            print("Vertex [" + str(vertex_id) + "] - " + self.vertices[vertex_id].name)
+
+        print("=" * lc, "EDGES", "=" * lc)
         for edge in self.edges:
             print("Edge from [" + str(edge.vertex_1.id) + ", (" + self.vertices[edge.vertex_1.id].name + ")] to [" + str(edge.vertex_2.id) + ", (" + self.vertices[edge.vertex_2.id].name + ")] of weight " + str(edge.weight))
 
