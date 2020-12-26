@@ -26,7 +26,7 @@ class Matrix:
     def get_count_rows(self):
         return len(self.array)
 
-    def load(self, input): # m.load "(1,2,3;4,5,6;7,8,9)"
+    def load(self, input): # m.load "{1,2,3;4,5,6;7,8,9}"
         """
         Nacteni matice ze vstupu
         """
@@ -115,9 +115,9 @@ class Matrix:
         > dir = "r" ... nasobit zprava
         """
         if dir == "l":
-            return self.get_count_cols() == matrix.get_count_rows()
+            return self.get_count_rows() == matrix.get_count_cols()
         if dir == "r":
-            return matrix.get_count_cols() == self.get_count_rows()
+            return self.get_count_cols() == matrix.get_count_rows()
 
     def multiply_left(self, matrix: Matrix): # m.ml "(1,3;5,2;2,4)";"(1,1,3;3,2,4)"  , m.ml "(1,1,3;3,2,4)";"(1,3;5,2;2,4)"
         """
@@ -128,7 +128,7 @@ class Matrix:
             raise Exception("Invalid matrix size")
 
         self.transpose()
-        result = Matrix([], matrix.get_count_rows(), self.get_count_rows())
+        result = Matrix([], self.get_count_rows(), matrix.get_count_rows())
 
         for i in range(len(matrix.array)): # Radky leve matice
            for j in range(len(self.array)): # Sloupce prave matice
@@ -152,9 +152,18 @@ class Matrix:
         """
         Secteni dvou matic
         """
-        for i in range(self.array):
-            for j in range(self.array[i]):
-                self.array[i, j] += matrix.get_value(i, j)
+        for i in range(len(self.array)):
+            for j in range(len(self.array[i])):
+                self.array[i][j] += matrix.get_value(i, j)
+        return self
+
+    def substract(self, matrix: Matrix):
+        """
+        Odecteni dvou matic
+        """
+        for i in range(len(self.array)):
+            for j in range(len(self.array[i])):
+                self.array[i][j] -= matrix.get_value(i, j)
         return self
 
     def get_value(self, row, column):
@@ -172,7 +181,7 @@ class Matrix:
         """
         for i in range(self.array):
             for j in range(self.array[i]):
-                self.array[i, j] *= const
+                self.array[i][j] *= const
         return self
 
     def transpose(self):

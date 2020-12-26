@@ -95,57 +95,74 @@ class Console:
         params = []
         flags = []
 
-        quotation_marks = False
-        space = 0
+        # Pokud je na zacatku cilo → vyhodnoceni vyrazu
+        if len(input) > 0 and ((ord(input[0]) > 47 and ord(input[0]) < 58) or ord(input[0]) == 40):
+            params.clear()
+            params.append(input.replace(" ",""))
+            command = "nexp"
+        # Pokud na na zacatku slozena zavorka - matice
+        elif len(input) > 0 and input[0] == "{":
+            lb = input.find("}")
+            sign = input[lb + 1]
+            if sign == "+":
+                command = "matrix.add"
+            elif sign == "-":
+                command = "matrix.sub"
+            elif sign == "*":
+                command = "matrix.mlp"
 
-        val = ""
-        for i in range(len(input)):
-            if quotation_marks:
-                if input[i] == "\"":
-                    quotation_marks = False
+            params.clear()
+            params.append(input[:lb + 1])
+            params.append(input[lb + 2:])
+        # Vyraz s parametry
+        else: 
+            quotation_marks = False
+            space = 0
+
+            val = ""
+            for i in range(len(input)):
+                if quotation_marks:
+                    if input[i] == "\"":
+                        quotation_marks = False
+                    else:
+                        val = val + input[i]
                 else:
-                    val = val + input[i]
-            else:
-                if input[i] == "\"":
-                    if val != "":
+                    if input[i] == "\"":
+                        if val != "":
+                            if space == 1:
+                                params.append(val)
+                            elif space == 2:
+                                flags.append(val)
+
+                        quotation_marks = True
+                        val = ""
+                    elif input[i] == ";":
                         if space == 1:
                             params.append(val)
                         elif space == 2:
                             flags.append(val)
-
-                    quotation_marks = True
-                    val = ""
-                elif input[i] == ";":
-                    if space == 1:
-                        params.append(val)
-                    elif space == 2:
-                        flags.append(val)
-                    val = ""
-                elif input[i] == " ":
-                    if space == 0:
-                        command = val
-                    elif space == 1:
-                        params.append(val)
-                    elif space == 2:
-                        flags.append(val)
-                    space += 1
-                    val = ""
-                else:
-                    val = val + input[i]
+                        val = ""
+                    elif input[i] == " ":
+                        if space == 0:
+                            command = val
+                        elif space == 1:
+                            params.append(val)
+                        elif space == 2:
+                            flags.append(val)
+                        space += 1
+                        val = ""
+                    else:
+                        val = val + input[i]
     
-        if val != "":
-            if space == 0:
-                command = val
-            elif space == 1:
-                 params.append(val)
-            elif space == 2:
-                 flags.append(val)
+            if val != "":
+                if space == 0:
+                    command = val
+                elif space == 1:
+                     params.append(val)
+                elif space == 2:
+                     flags.append(val)
 
-        # Pokud je na zacatku cilo → vyhodnoceni vyrazu
-        if len(command) > 0 and ((ord(command[0]) > 47 and ord(command[0]) < 58) or ord(command[0]) == 40):
-            params.clear()
-            params.append(command)
-            command = ""
+      
 
 
         return Action(command, params, flags)
@@ -161,67 +178,85 @@ class Console:
                 command_subs = [""] * 5
 
             # ====== STOP ======
-            if command == "stop":
+            if command_subs[0] == "stop":
                 return ActionResult(stop = True)
             # ====== TESTOVACI PRINT ======
-            elif command == "print":
+            elif command_subs[0] == "print":
                 for param in params:
                     print(param)
             # ====== NUMERICKE VYRAZY ======
-            elif command == "":
-                if command_subs[1] == "i2p":
+            elif command_subs[0] == "nexp":
+                if len(command_subs) > 1 and command_subs[1] == "i2p":
                     num_expression = NumericalExpression(params[0])
                     print(params[0], "->", num_expression.infix_to_postfix())
                 else:
                     num_expression = NumericalExpression(params[0])
                     result = ""
-                    if len(flags) > 0:
-                        if flags[0] == "postfix":
-                            result = num_expression.evaulate_postfix()
-                        elif flags[0] == "prefix":
-                            raise Exception("Not supported flag")
-                        elif flags[0] == "infix":
-                            result = num_expression.evaulate_infix()
-                    else:
-                        result = num_expression.evaulate_infix()
+                    result = num_expression.evaulate_infix()
                     print(params[0], "=", result)
             # ====== MATICE ======
             elif command_subs[0] == "matrix":
                 matrix = self.matrix
-                if command_subs[1] == "new":
-                    matrix = Matrix([])
-                elif command_subs[1] == "load":
-                    print(matrix.load(params[0]).array)
-                elif command_subs[1] == "tr":
-                    print(matrix.load(params[0]).transpose().array)
-                elif command_subs[1] == "ref":
-                    print(matrix.load(params[0]).REF().array)
-                elif command_subs[1] == "rref":
-                    print(matrix.load(params[0]).RREF().array)
-                elif command_subs[1] == "mlp":
-                    if command_subs[2] == "left":
-                        matrix.load(params[0])
-                        matrix_2 = Matrix().load(params[1])
-                        print(matrix.multiply_left(matrix_2).array)
-                    elif command_subs[2] == "right":
-                        matrix.load(params[0])
-                        matrix_2 = Matrix().load(params[1])
-                        print(matrix.multiply_right(matrix_2).array)
+                if len(command_subs) > 1:
+                    if command_subs[1] == "new":
+                        matrix = Matrix([])
+                    elif command_subs[1] == "load":
+                        print(matrix.load(params[0]).array)
+                    elif command_subs[1] == "tr":
+                        print(matrix.transpose().array)
+                    elif command_subs[1] == "ref":
+                        print(matrix.REF().array)
+                    elif command_subs[1] == "rref":
+                        print(matrix.RREF().array)
+                    elif command_subs[1] == "mlp":
+                        if len(command_subs) > 2 and command_subs[2] == "left":
+                            matrix_2 = Matrix().load(params[0])
+                            print(matrix.multiply_left(matrix_2).array)
+                        elif len(command_subs) > 2 and command_subs[2] == "right":
+                            matrix_2 = Matrix().load(params[0])
+                            print(matrix.multiply_right(matrix_2).array)
+                        else: # {1,2;1,2;1,2}*{1;2}
+                            if len(params) > 1:
+                                matrix = Matrix([])
+                                matrix.load(params[0])
+                                matrix_2 = Matrix().load(params[1])
+                            else:
+                                matrix_2 = Matrix().load(params[0])
+                            print(matrix.multiply_right(matrix_2).array)
+                    elif command_subs[1] == "add": # {2,2;2,2}+{2,2;2,2}
+                        if len(params) > 1:
+                            matrix = Matrix([])
+                            matrix.load(params[0])
+                            matrix_2 = Matrix().load(params[1])
+                        else:
+                            matrix_2 = Matrix().load(params[0])
+                        print(matrix.add(matrix_2).array)
+                    elif command_subs[1] == "sub":
+                        if len(params) > 1:
+                            matrix = Matrix([])
+                            matrix.load(params[0])
+                            matrix_2 = Matrix().load(params[1])
+                        else:
+                            matrix_2 = Matrix().load(params[0])
+                        print(matrix.substract(matrix_2).array)
+                else:
+                    print("Implicit Matrix Command")
             # ====== GRAFIKY ======
             elif command_subs[0] == "graph":
                 graph = self.graph
-                if command_subs[1] == "new":
-                    graph = Graph([])
-                elif command_subs[1] == "load":
-                    graph.load_fromFile(params[0]).print()
-                elif command_subs[1] == "vertex":
-                    if command_subs[2] == "add":
-                        graph.add_vertex(Vertex(params[0], params[1] if len(params) > 1 else params[0]))
-                        graph.print()
-                elif command_subs[1] == "edge":
-                    if command_subs[2] == "add":
-                        graph.add_edge(Edge(Vertex(params[0]), Vertex(params[1]), params[2] if len(params) > 2 else 1), "a")
-                        graph.print()
+                if len(command_subs) > 1:
+                    if command_subs[1] == "new":
+                        graph = Graph([])
+                    elif command_subs[1] == "load":
+                        graph.load_fromFile(params[0]).print()
+                    elif command_subs[1] == "vertex":
+                        if command_subs[2] == "add":
+                            graph.add_vertex(Vertex(params[0], params[1] if len(params) > 1 else params[0]))
+                            graph.print()
+                    elif command_subs[1] == "edge":
+                        if command_subs[2] == "add":
+                            graph.add_edge(Edge(Vertex(params[0]), Vertex(params[1]), params[2] if len(params) > 2 else 1), "a")
+                            graph.print()
             return ActionResult()
         except Exception as err:
             tr = traceback.format_exc()
