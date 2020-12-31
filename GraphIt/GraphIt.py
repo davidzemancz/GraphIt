@@ -58,7 +58,7 @@ class Console:
         return self
 
     def get_input(self): # Zatim jediny typ vstupu
-        return input("GraphIt.Command>")
+        return input("GraphIt.Command>").strip()
 
     def validate_input(self, input):
         command = ""
@@ -69,40 +69,21 @@ class Console:
 
         return True
 
-        valid_commands = [
-            "stop", 
-            "print", 
-            # numericke vyrazy
-            "nexp.eva",
-            "nexp.i2p",
-            # matice
-            "m.load",
-            "m.tr",
-            "m.ref",
-            "m.rref",
-            "m.mpl",
-            "m.mr",
-            "m.new",
-            # grafy
-            "g.new",
-            "g.load",
-            ]
-
-        return command in valid_commands
-
     def evaulate_input(self, input):
         command = ""
         params = []
         flags = []
 
-        # Pokud je na zacatku cilo → vyhodnoceni vyrazu
+        # Pokud je na zacatku cislo → vyhodnoceni vyrazu
         if len(input) > 0 and ((ord(input[0]) > 47 and ord(input[0]) < 58) or ord(input[0]) == 40):
             params.clear()
             params.append(input.replace(" ",""))
-            command = "nexp"
+            command = "nexp.infix"
         # Pokud na na zacatku slozena zavorka - matice
-        elif len(input) > 0 and input[0] == "{":
-            lb = input.find("}")
+        elif len(input) > 0 and input[0] == "[":
+            input = input.replace(" ","")
+
+            lb = input.find("]")
             sign = input[lb + 1]
             if sign == "+":
                 command = "matrix.add"
@@ -189,58 +170,57 @@ class Console:
                 if len(command_subs) > 1 and command_subs[1] == "i2p":
                     num_expression = NumericalExpression(params[0])
                     print(params[0], "->", num_expression.infix_to_postfix())
-                else:
+                elif len(command_subs) > 1 and command_subs[1] == "infix":
                     num_expression = NumericalExpression(params[0])
                     result = ""
                     result = num_expression.evaulate_infix()
                     print(params[0], "=", result)
             # ====== MATICE ======
             elif command_subs[0] == "matrix":
-                matrix = self.matrix
                 if len(command_subs) > 1:
                     if command_subs[1] == "new":
-                        matrix = Matrix([])
+                        self.matrix = Matrix([])
+                    elif command_subs[1] == "print":
+                        print(self.matrix.to_string())
                     elif command_subs[1] == "load":
-                        print(matrix.load(params[0]).array)
+                        print(self.matrix.load(params[0]).to_string())
                     elif command_subs[1] == "tr":
-                        print(matrix.transpose().array)
+                        print(self.matrix.transpose().to_string())
                     elif command_subs[1] == "ref":
-                        print(matrix.REF().array)
+                        print(self.matrix.REF().to_string())
                     elif command_subs[1] == "rref":
-                        print(matrix.RREF().array)
+                        print(self.matrix.RREF().to_string())
                     elif command_subs[1] == "mlp":
                         if len(command_subs) > 2 and command_subs[2] == "left":
                             matrix_2 = Matrix().load(params[0])
-                            print(matrix.multiply_left(matrix_2).array)
+                            print(self.matrix.multiply_left(matrix_2).to_string())
                         elif len(command_subs) > 2 and command_subs[2] == "right":
                             matrix_2 = Matrix().load(params[0])
-                            print(matrix.multiply_right(matrix_2).array)
-                        else: # {1,2;1,2;1,2}*{1;2}
+                            print(self.matrix.multiply_right(matrix_2).to_string())
+                        else: # [1,2;1,2;1,2]*[1;2]
                             if len(params) > 1:
-                                matrix = Matrix([])
-                                matrix.load(params[0])
+                                self.matrix = Matrix([])
+                                self.matrix.load(params[0])
                                 matrix_2 = Matrix().load(params[1])
                             else:
                                 matrix_2 = Matrix().load(params[0])
-                            print(matrix.multiply_right(matrix_2).array)
+                            print(self.matrix.multiply_right(matrix_2).to_string())
                     elif command_subs[1] == "add": # {2,2;2,2}+{2,2;2,2}
                         if len(params) > 1:
-                            matrix = Matrix([])
-                            matrix.load(params[0])
+                            self.matrix = Matrix([])
+                            self.matrix.load(params[0])
                             matrix_2 = Matrix().load(params[1])
                         else:
                             matrix_2 = Matrix().load(params[0])
-                        print(matrix.add(matrix_2).array)
+                        print(self.matrix.add(matrix_2).to_string())
                     elif command_subs[1] == "sub":
                         if len(params) > 1:
-                            matrix = Matrix([])
-                            matrix.load(params[0])
+                            self.matrix = Matrix([])
+                            self.matrix.load(params[0])
                             matrix_2 = Matrix().load(params[1])
                         else:
                             matrix_2 = Matrix().load(params[0])
-                        print(matrix.substract(matrix_2).array)
-                else:
-                    print("Implicit Matrix Command")
+                        print(self.matrix.substract(matrix_2).to_string())
             # ====== GRAFIKY ======
             elif command_subs[0] == "graph":
                 graph = self.graph

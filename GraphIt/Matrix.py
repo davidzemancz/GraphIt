@@ -199,6 +199,15 @@ class Matrix:
         self.array = new_matrix
         return self
 
+    def to_string(self):
+        ret = ""
+        for row in self.array:
+            for cell in row:
+                ret += str(cell) + "    "
+            ret += "\n"
+        ret = ret[:-1]
+
+        return ret
 
     def clone(self):
         """
