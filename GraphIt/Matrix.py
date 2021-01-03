@@ -66,7 +66,9 @@ class Matrix:
                 ratio = matrix[j][r] / pivot
                 for k in range(len(matrix[i])): # Prochazim sloupce
                     matrix[j][k] = matrix[j][k] - ratio * matrix[i][k] 
-            r += 1
+
+            if r + 1 < len(matrix[i]):
+                r += 1
 
         return self
 
@@ -102,7 +104,9 @@ class Matrix:
                 ratio = matrix[j][r] / pivot
                 for k in range(len(matrix[i])): # Prochazim sloupce
                     matrix[j][k] = matrix[j][k] - ratio * matrix[i][k] 
-            r += 1
+            
+            if r + 1 < len(matrix[i]):
+                r += 1
 
         return self
 
@@ -139,14 +143,22 @@ class Matrix:
 
         self.transpose()
 
-        return result
+        self.array = result.array
 
-    def multiply_right(self, matrix: Matrix): # m.mr "(1,3;5,2;2,4)";"(1,1,3;3,2,4)"  , m.mr "(1,1,3;3,2,4)";"(1,3;5,2;2,4)"
+        return self
+
+    def multiply_right(self, matrix: Matrix): # [1,2;1,2]*[1;2]
         """
         Nasobeni matici zprava
         """
+        temp = []
+        temp.extend(self.array)
+        self.array.clear()
+        self.array.extend(matrix.array)
+        matrix.array.clear()
+        matrix.array.extend(temp)
 
-        return matrix.multiply_left(self)
+        return self.multiply_left(matrix)
 
     def add(self, matrix: Matrix):
         """

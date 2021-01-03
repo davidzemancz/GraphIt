@@ -1,6 +1,7 @@
 from Matrix import Matrix
 from Vertex import Vertex
 from Edge import Edge
+from Stack import Stack
 import GraphEdgesHandler
 import json
 import copy
@@ -40,13 +41,34 @@ class Graph:
         """
  Vymazat vsechny hrany a vrcholy grafu
         """
-        self.matrix = Matrix()
+        self.matrix = Matrix([])
         self.vertices = {}
         self.edges = []
         return self
 
 
-    def load_fromFile(self, r_path):
+    def export_file(self, r_path):
+
+        file = open(r_path + ".json", "w")
+
+        data = {}
+        data["graph"] = {}
+        data["graph"]["vertices"] = []
+        data["graph"]["edges"] = []
+        
+        for v in self.vertices:
+            data["graph"]["vertices"].append({"id": v, "name": self.vertices[v].name})
+
+        for e in self.edges:
+            data["graph"]["edges"].append({"vertex_1":{"id": e.vertex_1.id}, "vertex_2":{"id": e.vertex_2.id}, "weight": e.weight})
+
+        json.dump(data, file)
+
+        file.close()
+
+        return self
+
+    def import_file(self, r_path):
         """
 Nacte graf ze souboru
         """
@@ -63,6 +85,8 @@ Nacte graf ze souboru
         for j_edge in j_graph["edges"]:
             edge = Edge(Vertex(j_edge["vertex_1"]["id"]), Vertex(j_edge["vertex_2"]["id"]), j_edge["weight"])
             self.add_edge(edge, "a")
+
+        file.close()
 
         return self
 
@@ -137,6 +161,31 @@ Nacte graf ze souboru
             
         return self
 
+    def remove_vertex(self, vertex: Vertex):
+        """
+        Odstranit vrchol z grafu
+        """
+        
+        temp_v = {}
+        temp_v.update(self.vertices)
+
+        temp_e = []
+        temp_e.extend(self.edges)
+
+        self.clear()
+
+        for v in temp_v:
+            if temp_v[v].id == vertex.id:
+                continue
+            self.add_vertex(temp_v[v])
+
+        
+        for e in temp_e:
+            if e.vertex_1.id== vertex.id or e.vertex_2.id== vertex.id:
+                continue
+            self.add_edge(e)
+
+        return self
 
     def remove_edge(self, edge: Edge):
         """
@@ -149,9 +198,13 @@ Nacte graf ze souboru
         # Odstranim vzdalenost v matici
         self.matrix.array[v1_index][v2_index] = 0
         self.matrix.array[v2_index][v1_index] = 0
-
+        
         # Odstranim hranu
-        self.edges.remove(edge)
+        for i in range(len(self.edges)):
+            e = self.edges[i]
+            if e.vertex_1.id == edge.vertex_1.id and e.vertex_2.id == edge.vertex_2.id:
+                self.edges.remove(e)
+                i -= 1
 
         return self
 
@@ -199,12 +252,60 @@ Nacte graf ze souboru
         
         return count == len(self.vertices)
 
+    def get_vertexEdges(self, vertex: Vertex, exception):
+        edges = []
+        for e in self.edges:
+            if e.vertex_1.id == vertex.id or e.vertex_2.id == vertex.id:
+                if e.vertex_1.id != exception and e.vertex_2.id != exception:
+                    edges.append(e)
+
+        return edges
   
     def is_tree(self):
         """
         Vraci True nebo False, zda je graf strom.
         """
-        return len(self.edges) == len(self.vertices) - 1 
+        return len(self.edges) == len(self.vertices) - 1 and self.is_connected()
+    
+    def contains_cycle(self):
+
+        cycle = False
+
+        if len(self.vertices) == 0:
+            return False
+
+        visited = {}
+        for v in self.vertices:
+            visited[v] = False
+
+        key = list(self.vertices.keys())[0]
+        visited[key] = True
+
+        prev_key = key
+
+        queue = []
+        while not cycle:
+            for edge in self.get_vertexEdges(Vertex(key), prev_key):
+                if visited[edge.vertex_1.id] and edge.vertex_1.id != key:
+                    cycle = True
+                    break
+                if visited[edge.vertex_2.id] and edge.vertex_2.id != key:
+                    cycle = True
+                    break
+
+                if edge.vertex_1.id != key:
+                    queue.append(edge.vertex_1.id)
+                if edge.vertex_2.id != key:
+                    queue.append(edge.vertex_2.id)
+            
+            if len(queue) < 1:
+                break
+
+            prev_key = key
+            key = queue.pop(0)
+            visited[key] = True
+
+        return cycle
 
    
     def get_minSpanningTree(self):
@@ -214,7 +315,8 @@ Nacte graf ze souboru
         spanningTree = Graph()
 
         # Seradim hrany podle ohodnoceni
-        sorted_edges = copy.deepcopy(self.edges)
+        sorted_edges = []
+        sorted_edges.extend(self.edges)
         GraphEdgesHandler.sort(sorted_edges)
 
         while len(spanningTree.edges) < len(self.vertices) - 1 and len(sorted_edges) > 0: # Dokud nejsou hrany mezi vsemi vrcholy
@@ -223,7 +325,7 @@ Nacte graf ze souboru
             spanningTree.add_vertex(edge.vertex_2)
             spanningTree.add_edge(edge)
             
-            if not spanningTree.is_tree():
+            if spanningTree.contains_cycle():
                 spanningTree.remove_edge(edge)
         return spanningTree
      
@@ -258,12 +360,10 @@ Nacte graf ze souboru
                 continue
             visited_arr[v] = True
             
-            #
-            #for u in range(count): 
-            #   if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
-            #        dist_arr[u] = dist_arr[v] + self.matrix.array[v][u]
-
-
+            
+            for u in range(count): 
+               if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
+                    dist_arr[u] = dist_arr[v] + self.matrix.array[v][u]
 
         dist_dic = {}
         for v_id in self.vertices: 
