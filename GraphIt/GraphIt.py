@@ -22,11 +22,11 @@ class Console:
 
     @property
     def graph(self):
-       return self.__array
+       return self.__graph
 
     @graph.setter
     def graph(self, value):
-       self.__array = value
+       self.__graph = value
 
     @staticmethod
     def start(): 
@@ -205,7 +205,7 @@ class Console:
                             else:
                                 matrix_2 = Matrix().load(params[0])
                             print(self.matrix.multiply_right(matrix_2).to_string())
-                    elif command_subs[1] == "add": # {2,2;2,2}+{2,2;2,2}
+                    elif command_subs[1] == "add": # [2,2;2,2]+[2,2;2,2]
                         if len(params) > 1:
                             self.matrix = Matrix([])
                             self.matrix.load(params[0])
@@ -223,20 +223,38 @@ class Console:
                         print(self.matrix.substract(matrix_2).to_string())
             # ====== GRAFIKY ======
             elif command_subs[0] == "graph":
-                graph = self.graph
                 if len(command_subs) > 1:
                     if command_subs[1] == "new":
-                        graph = Graph([])
-                    elif command_subs[1] == "load":
-                        graph.load_fromFile(params[0]).print()
+                        self.graph = Graph()
+                    elif command_subs[1] == "print":
+                        self.graph.print()
+                    elif command_subs[1] == "import":
+                        self.graph.import_file(params[0])
+                        self.graph.print()
+                    elif command_subs[1] == "export":
+                        self.graph.export_file(params[0])
+                        self.graph.print()
                     elif command_subs[1] == "vertex":
                         if command_subs[2] == "add":
-                            graph.add_vertex(Vertex(params[0], params[1] if len(params) > 1 else params[0]))
-                            graph.print()
+                            self.graph.add_vertex(Vertex(params[0], params[1] if len(params) > 1 else params[0]))
+                            self.graph.print()
+                        elif command_subs[2] == "remove":
+                            self.graph.remove_vertex(Vertex(params[0]))
+                            self.graph.print()
                     elif command_subs[1] == "edge":
                         if command_subs[2] == "add":
-                            graph.add_edge(Edge(Vertex(params[0]), Vertex(params[1]), params[2] if len(params) > 2 else 1), "a")
-                            graph.print()
+                            self.graph.add_edge(Edge(Vertex(params[0]), Vertex(params[1]), params[2] if len(params) > 2 else 1), "a")
+                            self.graph.print()
+                        elif command_subs[2] == "remove":
+                            self.graph.remove_edge(Edge(Vertex(params[0]), Vertex(params[1])))
+                            self.graph.print()
+                    elif command_subs[1] == "dijkstra":
+                        dic = self.graph.dijkstra(Vertex(params[0]))
+                        for v_id in dic:
+                            print(v_id, "-", dic[v_id])
+                    elif command_subs[1] == "minspntree":
+                        self.graph = self.graph.get_minSpanningTree()
+                        self.graph.print()
             return ActionResult()
         except Exception as err:
             tr = traceback.format_exc()

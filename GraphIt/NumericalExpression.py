@@ -60,7 +60,8 @@ class NumericalExpression:
             elif item == "(":
                 infix_arr.append(item)
             elif item == ")":
-                infix_arr.append(float(val))
+                if val != "": 
+                    infix_arr.append(float(val))
                 infix_arr.append(item)
                 val = ""
             else:
