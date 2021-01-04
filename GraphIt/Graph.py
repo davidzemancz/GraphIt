@@ -355,7 +355,7 @@ Nacte graf ze souboru
         dist_arr[self.vertices[source.id]._index] = 0
    
         for i in range(count): 
-            v = self.dijkstra_md(dist_arr, visited_arr) 
+            v = self.dijkstra_md(dist_arr, visited_arr) # Nejblizsi nenavstiveny vrchol
             if v == -1:
                 continue
             visited_arr[v] = True
@@ -369,7 +369,6 @@ Nacte graf ze souboru
             dist_dic[v_id] = dist_arr[self.vertices[v_id]._index]
 
         return dist_dic
-
 
        
     def print(self):

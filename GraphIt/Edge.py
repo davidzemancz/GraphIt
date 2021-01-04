@@ -4,7 +4,7 @@ class Edge:
     def __init__(self, vertex_1: Vertex, vertex_2: Vertex, weight = 1):
         self.vertex_1 = vertex_1
         self.vertex_2 = vertex_2
-        self.weight = weight
+        self.weight = float(weight)
 
     @property
     def vertex_1(self):
@@ -28,4 +28,4 @@ class Edge:
 
     @weight.setter
     def weight(self, value):
-       self.__weight = value
+       self.__weight = float(value)

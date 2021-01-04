@@ -95,6 +95,8 @@ class Console:
             params.clear()
             params.append(input[:lb + 1])
             params.append(input[lb + 2:])
+
+
         # Vyraz s parametry
         else: 
             quotation_marks = False
@@ -147,6 +149,8 @@ class Console:
 
 
         return Action(command, params, flags)
+
+    
 
     def perform_action(self, action):
         try:
@@ -260,7 +264,7 @@ class Console:
             return ActionResult()
         except Exception as err:
             tr = traceback.format_exc()
-            return ActionResult(error = ("[ERROR] - " + tr))
+            return ActionResult(error = ("[ =========== ERROR MESSAGE =========== ] \n" + tr + "[ ===================================== ]"))
             
     
 
