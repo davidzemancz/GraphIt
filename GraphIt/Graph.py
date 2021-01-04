@@ -310,7 +310,7 @@ Nacte graf ze souboru
    
     def get_minSpanningTree(self):
         """
-        Vraci podgraf, ktery je minimalni kostrou grafu
+        Vraci podgraf, ktery je minimalni kostrou grafu (Kruskaluv algoritmus)
         """
         spanningTree = Graph()
 
@@ -359,7 +359,6 @@ Nacte graf ze souboru
             if v == -1:
                 continue
             visited_arr[v] = True
-            
             
             for u in range(count): 
                if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 

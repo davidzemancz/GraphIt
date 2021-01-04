@@ -255,6 +255,8 @@ class Console:
                     elif command_subs[1] == "minspntree":
                         self.graph = self.graph.get_minSpanningTree()
                         self.graph.print()
+                    elif command_subs[1] == "connected":
+                        print(self.graph.is_connected())
             return ActionResult()
         except Exception as err:
             tr = traceback.format_exc()
