@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Docs\GraphIt-cs.docx" />
-    <Content Include="Docs\Prezentace.txt" />
     <Content Include="import.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

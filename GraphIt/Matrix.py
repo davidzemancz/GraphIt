@@ -1,5 +1,5 @@
 import copy
-import Matrix
+import Matrix 
 
 class Matrix:
     def __init__(self, matrix = [], columns = 0, rows = 0):
@@ -215,7 +215,8 @@ class Matrix:
         ret = ""
         for row in self.array:
             for cell in row:
-                ret += str(cell) + "    "
+                val = str(cell)
+                ret += val + (" " * (10 - len(val)))
             ret += "\n"
         ret = ret[:-1]
 

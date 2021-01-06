@@ -57,16 +57,11 @@ class Console:
 
         return self
 
-    def get_input(self): # Zatim jediny typ vstupu
+    def get_input(self): 
         return input("GraphIt.Command>").strip()
 
     def validate_input(self, input):
-        command = ""
-
-        arr = input.split(" ")
-        if len(arr) >= 0:
-            command = arr[0]
-
+                       
         return True
 
     def evaulate_input(self, input):
@@ -145,12 +140,11 @@ class Console:
                 elif space == 2:
                      flags.append(val)
 
-      
-
 
         return Action(command, params, flags)
 
-    
+    def print_msg(self, msg):
+        print("[ =========== MESSAGE =========== ] \n  " + msg + "\n[ =============================== ]")
 
     def perform_action(self, action):
         try:
@@ -184,6 +178,7 @@ class Console:
                 if len(command_subs) > 1:
                     if command_subs[1] == "new":
                         self.matrix = Matrix([])
+                        print(self.matrix.to_string())
                     elif command_subs[1] == "print":
                         print(self.matrix.to_string())
                     elif command_subs[1] == "load":
@@ -230,6 +225,7 @@ class Console:
                 if len(command_subs) > 1:
                     if command_subs[1] == "new":
                         self.graph = Graph()
+                        self.graph.print()
                     elif command_subs[1] == "print":
                         self.graph.print()
                     elif command_subs[1] == "import":
@@ -237,25 +233,25 @@ class Console:
                         self.graph.print()
                     elif command_subs[1] == "export":
                         self.graph.export_file(params[0])
-                        self.graph.print()
+                        self.print_msg("Export successful")
                     elif command_subs[1] == "vertex":
-                        if command_subs[2] == "add":
-                            self.graph.add_vertex(Vertex(params[0], params[1] if len(params) > 1 else params[0]))
+                        if command_subs[2] == "set":
+                            self.graph.set_vertex(Vertex(params[0], params[1] if len(params) > 1 else params[0]))
                             self.graph.print()
                         elif command_subs[2] == "remove":
                             self.graph.remove_vertex(Vertex(params[0]))
                             self.graph.print()
                     elif command_subs[1] == "edge":
-                        if command_subs[2] == "add":
-                            self.graph.add_edge(Edge(Vertex(params[0]), Vertex(params[1]), params[2] if len(params) > 2 else 1), "a")
+                        if command_subs[2] == "set":
+                            self.graph.set_edge(Edge(Vertex(params[0]), Vertex(params[1]), params[2] if len(params) > 2 else 1), "a")
                             self.graph.print()
                         elif command_subs[2] == "remove":
                             self.graph.remove_edge(Edge(Vertex(params[0]), Vertex(params[1])))
                             self.graph.print()
-                    elif command_subs[1] == "dijkstra":
-                        dic = self.graph.dijkstra(Vertex(params[0]))
-                        for v_id in dic:
-                            print(v_id, "-", dic[v_id])
+                    elif command_subs[1] == "findroute":
+                        arr = self.graph.find_route(Vertex(params[0]), Vertex(params[1]))
+                        for i in range(len(arr)):
+                            print(arr[i][0], "-", arr[i][1])
                     elif command_subs[1] == "minspntree":
                         self.graph = self.graph.get_minSpanningTree()
                         self.graph.print()

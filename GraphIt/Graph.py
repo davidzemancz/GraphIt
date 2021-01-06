@@ -39,7 +39,7 @@ class Graph:
     
     def clear(self):
         """
- Vymazat vsechny hrany a vrcholy grafu
+        Vymazat vsechny hrany a vrcholy grafu
         """
         self.matrix = Matrix([])
         self.vertices = {}
@@ -48,6 +48,9 @@ class Graph:
 
 
     def export_file(self, r_path):
+        """
+        Exportuje graf do souboru
+        """
 
         file = open(r_path + ".json", "w")
 
@@ -70,7 +73,7 @@ class Graph:
 
     def import_file(self, r_path):
         """
-Nacte graf ze souboru
+        Nacte graf ze souboru
         """
         self.clear()
 
@@ -80,17 +83,17 @@ Nacte graf ze souboru
 
         for j_vertex in j_graph["vertices"]:
             vertex = Vertex(j_vertex["id"], j_vertex["name"])
-            self.add_vertex(vertex)
+            self.set_vertex(vertex)
 
         for j_edge in j_graph["edges"]:
             edge = Edge(Vertex(j_edge["vertex_1"]["id"]), Vertex(j_edge["vertex_2"]["id"]), j_edge["weight"])
-            self.add_edge(edge, "a")
+            self.set_edge(edge, "a")
 
         file.close()
 
         return self
 
-    def add_vertex(self, vertex: Vertex):
+    def set_vertex(self, vertex: Vertex):
         """
         Pridat vrchol do grafu
 
@@ -116,16 +119,16 @@ Nacte graf ze souboru
 
         return self
 
-    def add_vertices(self, vertices: []):
+    def set_vertices(self, vertices: []):
         """
         Pridat vrcholy do grafu
         """
         for vertex in vertices:
-            self.add_vertex(vertex)
+            self.set_vertex(vertex)
         return self
 
    
-    def add_edge(self, edge: Edge, mode = "n"):
+    def set_edge(self, edge: Edge, mode = "n"):
         """
         Vlozit hranu mezi dva vrcholy grafu
         ---------------------------------------------------------
@@ -134,14 +137,31 @@ Nacte graf ze souboru
         > mode = "a" ... pokud nejsou vrcholy hrany v grafu, pridam je
         """
 
+        for e in self.edges:
+
+            # Pokud hrana mezi vrcholy jiz existuje
+            if (e.vertex_1.id == edge.vertex_1.id and e.vertex_2.id == edge.vertex_2.id) or (e.vertex_1.id == edge.vertex_2.id and e.vertex_2.id == edge.vertex_1.id):
+
+                e.weight = edge.weight
+
+                # Indexy vrcholu v poli
+                v1_index = self.vertices[edge.vertex_1.id]._index
+                v2_index = self.vertices[edge.vertex_2.id]._index
+
+                # Neorientovany graf -> symetricka matice
+                self.matrix.array[v1_index][v2_index] = edge.weight
+                self.matrix.array[v2_index][v1_index] = edge.weight
+
+                return self
+
         if mode == "n":
             if not edge.vertex_1.id in self.vertices or not edge.vertex_2.id in self.vertices:
                 raise Exception("No such a vertex in graph")
         elif mode == "a":
             if not edge.vertex_1.id in self.vertices:
-                self.add_vertex(self, edge.vertex_1)
+                self.set_vertex(edge.vertex_1)
             if not edge.vertex_2.id in self.vertices:
-                self.add_vertex(self, edge.vertex_2)
+                self.set_vertex(edge.vertex_2)
 
         # Indexy vrcholu v poli
         v1_index = self.vertices[edge.vertex_1.id]._index
@@ -177,13 +197,13 @@ Nacte graf ze souboru
         for v in temp_v:
             if temp_v[v].id == vertex.id:
                 continue
-            self.add_vertex(temp_v[v])
+            self.set_vertex(temp_v[v])
 
         
         for e in temp_e:
             if e.vertex_1.id== vertex.id or e.vertex_2.id== vertex.id:
                 continue
-            self.add_edge(e)
+            self.set_edge(e)
 
         return self
 
@@ -209,12 +229,12 @@ Nacte graf ze souboru
         return self
 
 
-    def add_edges(self, edges: []):
+    def set_edges(self, edges: []):
         """
         Vlozit vice hran do grafu
         """
         for edge in edges:
-            self.add_edge(edge)
+            self.set_edge(edge)
         return self
 
    
@@ -253,6 +273,10 @@ Nacte graf ze souboru
         return count == len(self.vertices)
 
     def get_vertexEdges(self, vertex: Vertex, exception):
+        """
+        Vraci hrany vedouci od vrcholu
+        Parametr exception rika, ze pokud hrana obsahuje vrchol s danym id, tak ji nevracim
+        """
         edges = []
         for e in self.edges:
             if e.vertex_1.id == vertex.id or e.vertex_2.id == vertex.id:
@@ -268,7 +292,9 @@ Nacte graf ze souboru
         return len(self.edges) == len(self.vertices) - 1 and self.is_connected()
     
     def contains_cycle(self):
-
+        """
+        Obsahuje graf cyklus
+        """
         cycle = False
 
         if len(self.vertices) == 0:
@@ -321,54 +347,83 @@ Nacte graf ze souboru
 
         while len(spanningTree.edges) < len(self.vertices) - 1 and len(sorted_edges) > 0: # Dokud nejsou hrany mezi vsemi vrcholy
             edge = sorted_edges.pop(0) # Hrana s nejnizsim ohodnocennim
-            spanningTree.add_vertex(edge.vertex_1)
-            spanningTree.add_vertex(edge.vertex_2)
-            spanningTree.add_edge(edge)
+            spanningTree.set_vertex(edge.vertex_1)
+            spanningTree.set_vertex(edge.vertex_2)
+            spanningTree.set_edge(edge)
             
             if spanningTree.contains_cycle():
                 spanningTree.remove_edge(edge)
         return spanningTree
-     
-    
-    def dijkstra_md(self, dist_arr, visited_arr): 
-        """
-        Podpurna fce dijkstrova algoritmu, vraci nejkratsi vzdalenost k nenavstivenym vrcholum
-        """
-        min_index = -1
-        min = float('inf')
-        #min_index = 0
-        for v in range(len(self.vertices)): 
-            if dist_arr[v] < min and visited_arr[v] == False: 
-                min = dist_arr[v] 
-                min_index = v 
-        return min_index 
 
-    
-    def dijkstra(self, source: Vertex):
+    def get_neighbours(self, vertex):
         """
-        Dijkstruv algoritmus, vraci dic minimalnich vzdalenosti ke vsem vrcholum
+        Vraci sousedy vcholu a ohodnoceni hran k nim vedoucich
         """
-        count = len(self.vertices)
-
-        dist_arr = [float('inf')] * count
-        visited_arr = [False] * count
-        dist_arr[self.vertices[source.id]._index] = 0
-   
-        for i in range(count): 
-            v = self.dijkstra_md(dist_arr, visited_arr) # Nejblizsi nenavstiveny vrchol
-            if v == -1:
-                continue
-            visited_arr[v] = True
+        neighbours = {}
             
-            for u in range(count): 
-               if self.matrix.array[v][u] > 0 and visited_arr[u] == False and dist_arr[u] > dist_arr[v] + self.matrix.array[v][u]: 
-                    dist_arr[u] = dist_arr[v] + self.matrix.array[v][u]
+        for edge in self.edges:
+            if edge.vertex_1.id == vertex:
+                neighbours[edge.vertex_2.id] = edge.weight
+            if edge.vertex_2.id == vertex:
+                neighbours[edge.vertex_1.id] = edge.weight
 
-        dist_dic = {}
-        for v_id in self.vertices: 
-            dist_dic[v_id] = dist_arr[self.vertices[v_id]._index]
+        return neighbours
 
-        return dist_dic
+    def find_route(self, source : Vertex, dest : Vertex):
+        """
+        Najde nejktratsi cestu mezi vrcholy
+        """
+
+        distances = {}
+        previous_vertices = {}
+
+        for v in self.vertices:
+            distances[v] = float("inf")
+            previous_vertices[v] = None
+
+        distances[source.id] = 0
+        vertices = {}
+        vertices.update(self.vertices)
+
+        while len(vertices) > 0:
+            current_vertex = min(vertices, key = lambda v: distances[v])
+            vertices.pop(current_vertex)
+            if distances[current_vertex] == float("inf"):
+                break
+            
+            neighbours = self.get_neighbours(current_vertex)
+            for neighbour in neighbours:
+                weight = neighbours[neighbour]
+                distance = distances[current_vertex] + weight
+                
+                if distance < distances[neighbour]:
+                    distances[neighbour] = distance
+                    previous_vertices[neighbour] = current_vertex
+
+        route = []
+
+        current_vertex = dest.id
+        while previous_vertices[current_vertex] is not None:
+            route.append((current_vertex, distances[current_vertex]))
+            current_vertex = previous_vertices[current_vertex]
+        
+        if len(route) > 0:
+             route.append((current_vertex, distances[current_vertex]))
+
+        route.reverse()
+
+        return route
+
+    def get_vertexByIndex(self, index):
+        """
+        Vrati vrchol podle indexu
+        """
+
+        for v in self.vertices:
+            if self.vertices[v]._index == index:
+                return v
+
+        return None
 
        
     def print(self):

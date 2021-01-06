@@ -66,6 +66,15 @@
       },
       {
         "vertex_1": {
+          "id": "A"
+        },
+        "vertex_2": {
+          "id": "P"
+        },
+        "weight": 110
+      },
+      {
+        "vertex_1": {
           "id": "C"
         },
         "vertex_2": {
