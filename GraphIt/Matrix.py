@@ -47,6 +47,9 @@ class Matrix:
         return self
 
     def REF(self): # m.ref "(1,2,3;4,5,6;7,8,9)"
+        raise Exception("Not supported")
+        return self
+
         """
         Uprava matice do REF
         """
@@ -72,6 +75,10 @@ class Matrix:
         return self
 
     def RREF(self): # m.rref "(1,2,3;4,5,6;7,8,9)"
+        raise Exception("Not supported")
+        return self
+
+
         """
         Uprava matice do RREF
         """

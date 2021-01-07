@@ -51,6 +51,8 @@ class Graph:
         """
         Exportuje graf do souboru
         """
+        if r_path == "":
+            raise Exception("Missing file name")
 
         file = open(r_path + ".json", "w")
 
@@ -75,6 +77,9 @@ class Graph:
         """
         Nacte graf ze souboru
         """
+        if r_path == "":
+            raise Exception("Missing file name")
+
         self.clear()
 
         file = open(r_path + ".json")
@@ -309,7 +314,7 @@ class Graph:
 
         prev_key = ""
 
-        queue = []
+        queue = [] # Pamatuji si vrcholy, do kterych muzu jit a odkud jsem do nich prisel
         while not cycle:
             for edge in self.get_vertexEdges(Vertex(key), prev_key):
                 if visited[edge.vertex_1.id] and edge.vertex_1.id != key:
