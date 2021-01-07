@@ -307,7 +307,7 @@ class Graph:
         key = list(self.vertices.keys())[0]
         visited[key] = True
 
-        prev_key = key
+        prev_key = ""
 
         queue = []
         while not cycle:
@@ -320,15 +320,27 @@ class Graph:
                     break
 
                 if edge.vertex_1.id != key:
-                    queue.append(edge.vertex_1.id)
+                    queue.append((edge.vertex_1.id, key))
                 if edge.vertex_2.id != key:
-                    queue.append(edge.vertex_2.id)
+                    queue.append((edge.vertex_2.id, key))
             
             if len(queue) < 1:
-                break
+                for e in self.edges:
+                    if not visited[e.vertex_1.id]:
+                        queue.append((e.vertex_1.id,""))
+                        key = ""
+                        break
+                    if not visited[e.vertex_2.id]:
+                        queue.append((e.vertex_2.id,""))
+                        key = ""
+                        break
+                if len(queue) < 1:
+                    break
 
-            prev_key = key
-            key = queue.pop(0)
+            
+            k = queue.pop(0)
+            key = k[0]
+            prev_key = k[1]
             visited[key] = True
 
         return cycle

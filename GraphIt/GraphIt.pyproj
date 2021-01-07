@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>ef4fe277-7f40-490d-84d9-b925014d066f</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Test.py</StartupFile>
+    <StartupFile>Start.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -38,7 +38,7 @@
     <Compile Include="Vertex.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Test.py">
+    <Compile Include="Start.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Matrix.py">

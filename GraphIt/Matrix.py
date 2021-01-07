@@ -1,5 +1,4 @@
 import copy
-import Matrix 
 
 class Matrix:
     def __init__(self, matrix = [], columns = 0, rows = 0):
@@ -110,7 +109,7 @@ class Matrix:
 
         return self
 
-    def can_multiply(self, matrix: Matrix, dir = "l"):
+    def can_multiply(self, matrix, dir = "l"):
         """
         Lze matice nasobit
         ---------------------------------------------------------
@@ -123,7 +122,7 @@ class Matrix:
         if dir == "r":
             return self.get_count_cols() == matrix.get_count_rows()
 
-    def multiply_left(self, matrix: Matrix): # m.ml "(1,3;5,2;2,4)";"(1,1,3;3,2,4)"  , m.ml "(1,1,3;3,2,4)";"(1,3;5,2;2,4)"
+    def multiply_left(self, matrix): # m.ml "(1,3;5,2;2,4)";"(1,1,3;3,2,4)"  , m.ml "(1,1,3;3,2,4)";"(1,3;5,2;2,4)"
         """
         Nasobeni matici zleva
         """
@@ -147,7 +146,7 @@ class Matrix:
 
         return self
 
-    def multiply_right(self, matrix: Matrix): # [1,2;1,2]*[1;2]
+    def multiply_right(self, matrix): # [1,2;1,2]*[1;2]
         """
         Nasobeni matici zprava
         """
@@ -160,7 +159,7 @@ class Matrix:
 
         return self.multiply_left(matrix)
 
-    def add(self, matrix: Matrix):
+    def add(self, matrix):
         """
         Secteni dvou matic
         """
@@ -169,7 +168,7 @@ class Matrix:
                 self.array[i][j] += matrix.get_value(i, j)
         return self
 
-    def substract(self, matrix: Matrix):
+    def substract(self, matrix):
         """
         Odecteni dvou matic
         """

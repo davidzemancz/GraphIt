@@ -161,7 +161,7 @@
         "vertex_2": {
           "id": "A"
         },
-        "weight": 120
+        "weight": 115
       },
       {
         "vertex_1": {
@@ -220,6 +220,15 @@
       {
         "vertex_1": {
           "id": "B"
+        },
+        "vertex_2": {
+          "id": "Z"
+        },
+        "weight": 90
+      },
+      {
+        "vertex_1": {
+          "id": "M"
         },
         "vertex_2": {
           "id": "Z"
