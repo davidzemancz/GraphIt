@@ -107,6 +107,9 @@ class Graph:
         if vertex.id in self.vertices:
             if vertex.name is not None:
                 self.vertices[vertex.id].name = vertex.name
+        elif vertex.id == "":
+            raise Exception("Missing vertex id")
+
         else:
             # Pridam sloupec do existujicich radku
             for i in range(len(self.matrix.array)):
@@ -163,6 +166,9 @@ class Graph:
             if not edge.vertex_1.id in self.vertices or not edge.vertex_2.id in self.vertices:
                 raise Exception("No such a vertex in graph")
         elif mode == "a":
+            if edge.vertex_1.id == "" or edge.vertex_2.id == "":
+                raise Exception("Missing vertex id")
+
             if not edge.vertex_1.id in self.vertices:
                 self.set_vertex(edge.vertex_1)
             if not edge.vertex_2.id in self.vertices:
