@@ -185,6 +185,10 @@ class Console:
                         print(self.matrix.load(params[0]).to_string())
                     elif command_subs[1] == "tr":
                         print(self.matrix.transpose().to_string())
+                    elif command_subs[1] == "ref":
+                        print(self.matrix.REF().to_string())
+                    elif command_subs[1] == "rref":
+                        print(self.matrix.RREF().to_string())
                     elif command_subs[1] == "mlp":
                         if len(command_subs) > 2 and command_subs[2] == "left":
                             matrix_2 = Matrix().load(params[0])

@@ -35,8 +35,7 @@ class Graph:
     @edges.setter
     def edges(self, value):
        self.__edges = value
-
-    
+           
     def clear(self):
         """
         Vymazat vsechny hrany a vrcholy grafu
@@ -45,7 +44,6 @@ class Graph:
         self.vertices = {}
         self.edges = []
         return self
-
 
     def export_file(self, r_path):
         """
@@ -135,7 +133,6 @@ class Graph:
             self.set_vertex(vertex)
         return self
 
-   
     def set_edge(self, edge: Edge, mode = "n"):
         """
         Vlozit hranu mezi dva vrcholy grafu
@@ -239,7 +236,6 @@ class Graph:
 
         return self
 
-
     def set_edges(self, edges: []):
         """
         Vlozit vice hran do grafu
@@ -248,7 +244,6 @@ class Graph:
             self.set_edge(edge)
         return self
 
-   
     def is_connected(self): 
         """
         Vraci True nebo False, zda je graf souvisly
@@ -356,7 +351,6 @@ class Graph:
 
         return cycle
 
-   
     def get_minSpanningTree(self):
         """
         Vraci podgraf, ktery je minimalni kostrou grafu (Kruskaluv algoritmus)
@@ -414,6 +408,7 @@ class Graph:
             if distances[current_vertex] == float("inf"):
                 break
             
+            # Pro vsechny sousedy nejblizsiho vrcholu overi, zda neexistuje kratsi cesta pres aktualni
             neighbours = self.get_neighbours(current_vertex)
             for neighbour in neighbours:
                 weight = neighbours[neighbour]
@@ -447,8 +442,7 @@ class Graph:
                 return v
 
         return None
-
-       
+          
     def print(self):
         """
         Vyprinti graf to konzole
