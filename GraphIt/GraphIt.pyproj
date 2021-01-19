@@ -35,7 +35,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GraphIt.py" />
-    <Compile Include="Math.py">
+    <Compile Include="Maths.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Vertex.py">
