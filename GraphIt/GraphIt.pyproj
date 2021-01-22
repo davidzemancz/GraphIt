@@ -25,6 +25,9 @@
     <Compile Include="Action.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BinaryTree.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Edge.py">
       <SubType>Code</SubType>
     </Compile>
