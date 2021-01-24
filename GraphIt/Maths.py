@@ -1,3 +1,5 @@
+import math
+
 def lagrange(arr, x):
     """
     Lagrangeuv interpolacni polynom
@@ -50,4 +52,20 @@ def factorial(k):
         return 1
     else:
         return k * factorial(k-1)
+
+def is_prime(number):
+
+    if number == 2:
+        return True
+    elif number % 2 == 0:
+        return False
+    else:
+        sr = math.sqrt(number)
+        for i in range(3, int(sr + 1), 2):
+            if number % i == 0:
+                print("Divisor:", i)
+                return False
+    return True
+
+    pass
 

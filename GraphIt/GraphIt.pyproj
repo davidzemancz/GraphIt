@@ -38,6 +38,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GraphIt.py" />
+    <Compile Include="Heap.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Maths.py">
       <SubType>Code</SubType>
     </Compile>
